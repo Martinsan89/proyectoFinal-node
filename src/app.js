@@ -13,7 +13,7 @@ app.get("/products", async (req, res) => {
   const allProducts = await newManager.getProducts();
   if (limit) {
     const newArray = allProducts.slice(0, limit);
-    res.send({ newArray });
+    res.send({ products: newArray });
     return;
   } else {
     res.send({ products: allProducts });
