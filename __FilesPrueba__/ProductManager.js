@@ -1,18 +1,19 @@
 // const fs = require("fs");
 import * as fs from "fs";
+import { randomUUID } from "crypto";
 
 export class ProductManager {
-  static incrementId() {
-    if (!this.id) {
-      this.id = 1;
-    } else {
-      this.id++;
-    }
-    return this.id;
-  }
+  // static incrementId() {
+  //   if (!this.id) {
+  //     this.id = 1;
+  //   } else {
+  //     this.id++;
+  //   }
+  //   return this.id;
+  // }
   constructor(path) {
     this.path = path;
-    this.id = ProductManager.incrementId();
+    this.id = randomUUID();
   }
 
   async getProducts() {
@@ -25,36 +26,35 @@ export class ProductManager {
     }
   }
 
-  // async addProducts(product) {
-  //   const keys = [
-  //     "title",
-  //     "description",
-  //     "price",
-  //     "thumbnail",
-  //     "code",
-  //     "stock",
-  //   ];
+  async addProducts(product) {
+    const keys = [
+      "title",
+      "description",
+      "code",
+      "price",
+      "status",
+      "stock",
+      "category",
+    ];
 
-  //   const productsList = await this.getProducts();
+    const productsList = await this.getProducts();
 
-  //   const productKeys = JSON.stringify(Object.keys(product));
+    const productKeys = JSON.stringify(Object.keys(product));
 
-  //   if (productKeys === JSON.stringify(keys)) {
-  //     const findProd = productsList.find(
-  //       (p) => p.product.code === product.code
-  //     );
+    if (productKeys === JSON.stringify(keys)) {
+      const findProd = productsList.find((p) => p.code === product.code);
 
-  //     if (findProd) {
-  //       return console.log("Producto no agregado... mismo code", product);
-  //     } else {
-  //       const newProductsList = [...productsList, { id: this.id++, product }];
-  //       const newProductsListToString = JSON.stringify(newProductsList);
-  //       return await fs.promises.writeFile(this.path, newProductsListToString);
-  //     }
-  //   } else {
-  //     console.log("Producto no agregado... faltan campos", product);
-  //   }
-  // }
+      if (findProd) {
+        return console.log("Producto no agregado... mismo code", product);
+      } else {
+        const newProductsList = [...productsList, { id: this.id, product }];
+        const newProductsListToString = JSON.stringify(newProductsList);
+        return await fs.promises.writeFile(this.path, newProductsListToString);
+      }
+    } else {
+      console.log("Producto no agregado... faltan campos", product);
+    }
+  }
 
   async getProductById(id) {
     const productsList = await this.getProducts();
