@@ -1,7 +1,9 @@
 import { Router } from "express";
-import { FileManager } from "../../data/productsDB.js";
-import { validateProduct } from "../../data/validation.js";
-const ProductManager = new FileManager("./data/products.json");
+import { ProductsManager } from "../db/productsDB.js";
+import { validateProduct } from "../helpers/validation.js";
+import { uploader } from "../utils/uploader.js";
+
+const ProductManager = new ProductsManager("./data/products.json");
 const route = Router();
 
 route.get("/", async (req, res) => {
@@ -19,37 +21,41 @@ route.get("/", async (req, res) => {
 route.get("/:productId", async (req, res) => {
   const { productId } = req.params;
   const product = await ProductManager.getProductById(productId);
-
-  res.send({ ...product });
+  if (!product) {
+    res.status(404).send({ error: "producto no encontrado" });
+  }
+  res.status(200).send({ ...product });
 });
 
-route.post("/", async (req, res) => {
+route.post("/", uploader.single("file"), async (req, res) => {
   const product = req.body;
+  product.thumbnail = [req.file?.path];
   const isValid = validateProduct(product);
-  console.log(isValid);
   if (!isValid) {
-    res.status(404).send({ error: "Datos inválidos" });
+    res.status(400).send({ error: "Datos inválidos" });
     return;
   }
-  const id = await ProductManager.addProducts(...product);
+  const id = await ProductManager.addProducts(product);
   res.status(201).send({ id });
 });
 
-route.put("/:idProduct", async (req, res) => {
+route.put("/:idProduct", uploader.single("file"), async (req, res) => {
   const idProd = req.params.idProduct;
   const product = await ProductManager.getProductById(idProd);
   if (!product) {
-    res.status(404).send({ error: "producto no encontrado" });
+    res.status(400).send({ error: "producto no encontrado" });
     return;
   }
   const newData = req.body;
+  newData.thumbnail = [req.file?.path];
+
   const isValid = validateProduct(newData);
   if (!isValid) {
-    res.status(404).send({ error: "Datos inválidos" });
+    res.status(400).send({ error: "Datos inválidos" });
     return;
   }
-  await ProductManager.updateProduct(idProd, ...newData);
-  res.status(200).send({ ok: true });
+  await ProductManager.updateProduct(idProd, newData);
+  res.status(202).send({ ok: true });
 });
 
 route.delete("/:idProduct", async (req, res) => {

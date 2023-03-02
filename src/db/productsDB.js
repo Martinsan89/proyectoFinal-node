@@ -2,7 +2,7 @@
 import * as fs from "fs";
 import { randomUUID } from "crypto";
 
-export class FileManager {
+export class ProductsManager {
   constructor(path) {
     this.path = path;
   }
@@ -12,8 +12,7 @@ export class FileManager {
       const productList = await fs.promises.readFile(this.path);
       return JSON.parse(productList);
     } catch (error) {
-      // console.log(error);
-      return [];
+      return error;
     }
   }
 
@@ -54,7 +53,3 @@ export class FileManager {
     return findProd ? findProd : "id no encontrado";
   }
 }
-
-// module.exports = {
-//   ProductManager,
-// };
