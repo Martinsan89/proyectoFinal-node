@@ -7,7 +7,7 @@ function validate(product) {
     productValues.title &&
     productValues.description &&
     productValues.code &&
-    productValues.price &&
+    !productValues.price &&
     productValues.status &&
     productValues.category
   ) {

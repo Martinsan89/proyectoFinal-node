@@ -1,0 +1,66 @@
+<div>
+    <h1>Real time Products</h1>
+    <hr>
+    <div>
+        <div>
+            <h2>Agregar producto</h2>
+            <form onsubmit= 'send(event)'>
+            <input id='form-title' type='text' title='form-title' placeholder='Titulo' />
+            <input
+                id='form-description'
+                type='text'
+                name='form-description'
+                placeholder='description'
+            />
+            <input
+                id='form-code'
+                type='text'
+                name='form-code'
+                placeholder='code'
+            />
+            <input
+                id='form-price'
+                type='number'
+                name='form-price'
+                placeholder='price'
+            />
+            <input
+                id='form-status'
+                type='text'
+                name='form-status'
+                placeholder='status'
+            />
+            <input
+                id='form-stock'
+                type='number'
+                name='form-stock'
+                placeholder='stock'
+            />
+            <input
+                id='form-category'
+                type='text'
+                name='form-category'
+                placeholder='category'
+            />
+            <input
+                id='form-thumbnail'
+                type='text'
+                name='form-thumbnail'
+                placeholder='thumbnail'
+            />
+            <input type='submit' value='Guardar Usuario' />
+            </form>
+            <p id='usuario-id'></p>
+        </div>
+    </div>
+    <hr>
+    <h2>Lista de productos</h2>
+    {{#each products}}
+        
+        <p>{{title}}</p>
+    {{/each}}
+    <div id="productsTable"></div>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="js/script.js"></script>

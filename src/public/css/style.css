@@ -1,0 +1,19 @@
+body {
+    background-color: black;
+    color: white;
+}
+
+#productsTable {
+    display: block;
+    margin-top: 20px;
+}
+th, td {
+    border: 1px solid white;
+    padding: 2px;
+    text-align: center;
+}
+
+.btnDelete {
+    padding: 2px;
+    background-color: aqua;
+}
