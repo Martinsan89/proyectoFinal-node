@@ -1,13 +1,11 @@
 import { Router } from "express";
-import { ProductsManager } from "../db/productsDB.js";
-import { socketServer } from "../socket/configure-socket.js";
-
-const ProductManager = new ProductsManager("./data/products.json");
-const products = await ProductManager.getProducts();
+import { productsManager } from "../dao/managers/products.manager.js";
 
 const route = Router();
 
 route.get("/", async (req, res) => {
+  const products = await productsManager.getAll();
+
   if (!products) {
     res.render("notFound", {
       title: "Products",
@@ -17,26 +15,13 @@ route.get("/", async (req, res) => {
   res.render("home", { products });
 });
 
-route.get("/realtimeproducts", (req, res) => {
-  res.render(
-    "realtimeproducts",
-    socketServer.on("connection", async (socket) => {
-      console.log("socket conectado");
-      socket.emit("products", { products });
+route.get("/realtimeproducts", async (req, res) => {
+  const products = await productsManager.getAll();
+  res.render("realtimeproducts", { products });
+});
 
-      socket.on("toDelete", async (id) => {
-        await ProductManager.deleteProduct(id);
-        const products = await ProductManager.getProducts();
-        socketServer.emit("products", { products });
-      });
-
-      await socket.on("toPost", async (product) => {
-        await ProductManager.addProducts(product);
-        const products = await ProductManager.getProducts();
-        socketServer.emit("products", { products });
-      });
-    })
-  );
+route.get("/chat", async (req, res) => {
+  res.render("chat");
 });
 
 export default route;

@@ -1,72 +1,74 @@
 import { Router } from "express";
-import { ProductsManager } from "../db/productsDB.js";
-import { validateProduct } from "../helpers/validation.js";
+import { BadRequestException } from "../classes/errors/bad-request-exception.js";
+import { NotFoundException } from "../classes/errors/not-found-exception.js";
 import { uploader } from "../utils/uploader.js";
+import { productsManager } from "../dao/managers/products.manager.js";
 
-const ProductManager = new ProductsManager("./data/products.json");
 const route = Router();
 
-route.get("/", async (req, res) => {
-  const query = req.query;
-  const limit = query.limit;
-  const allProducts = await ProductManager.getProducts();
-  if (limit) {
-    const newArray = allProducts.slice(0, limit);
-    res.send({ products: newArray });
-    return;
-  } else {
-    res.send({ products: allProducts });
+route.get("/", async (req, res, next) => {
+  const { skip, limit, ...query } = req.query;
+
+  try {
+    const products = await productsManager.getAll(skip, limit, query);
+    res.status(200).send({ products });
+  } catch (error) {
+    next(new BadRequestException());
   }
 });
-route.get("/:productId", async (req, res) => {
-  const { productId } = req.params;
-  const product = await ProductManager.getProductById(productId);
-  if (!product) {
-    res.status(404).send({ error: "producto no encontrado" });
+route.get("/:idProduct", async (req, res, next) => {
+  const productId = req.params.idProduct;
+  try {
+    const product = await productsManager.findById(productId);
+    res.status(200).send({ product });
+  } catch (error) {
+    next(new NotFoundException());
   }
-  res.status(200).send({ ...product });
 });
 
-route.post("/", uploader.single("file"), async (req, res) => {
+route.post("/", uploader.single("file"), async (req, res, next) => {
   const product = req.body;
-  product.thumbnail = [req.file?.path];
-  const isValid = validateProduct(product);
-  if (!isValid) {
-    res.status(400).send({ error: "Datos inválidos" });
-    return;
+
+  try {
+    const { _id } = await productsManager.create(product);
+    res.status(201).send({ id: _id });
+  } catch (error) {
+    next(new BadRequestException());
   }
-  const id = await ProductManager.addProducts(product);
-  res.status(201).send({ id });
 });
 
-route.put("/:idProduct", uploader.single("file"), async (req, res) => {
+route.put("/:idProduct", uploader.single("file"), async (req, res, next) => {
   const idProd = req.params.idProduct;
-  const product = await ProductManager.getProductById(idProd);
-  if (!product) {
-    res.status(400).send({ error: "producto no encontrado" });
-    return;
-  }
   const newData = req.body;
-  newData.thumbnail = [req.file?.path];
 
-  const isValid = validateProduct(newData);
-  if (!isValid) {
-    res.status(400).send({ error: "Datos inválidos" });
-    return;
+  try {
+    const newProd = await productsManager.update(idProd, newData);
+    res.status(202).send({ newProd });
+  } catch (error) {
+    next(new NotFoundException());
   }
-  await ProductManager.updateProduct(idProd, newData);
-  res.status(202).send({ ok: true });
 });
 
-route.delete("/:idProduct", async (req, res) => {
+// route.patch("/:idProduct", async (req, res, next) => {
+//   const idProd = req.params.idProduct;
+//   const newData = req.body;
+
+//   try {
+//     const newProd = await productsManager.replace({ _id: idProd, newData });
+//     res.status(202).send({ newProd });
+//   } catch (error) {
+//     next(new NotFoundException());
+//   }
+// });
+
+route.delete("/:idProduct", async (req, res, next) => {
   const idProduct = req.params.idProduct;
-  const product = await ProductManager.getProductById(idProduct);
-  if (!product) {
-    res.status(404).send({ error: "producto no encontrado" });
-    return;
+  try {
+    await productsManager.delete({ _id: idProduct });
+    res.status(200).send({ ok: true });
+  } catch (error) {
+    next(new NotFoundException());
   }
-  await ProductManager.deleteProduct(idProduct);
-  res.status(200).send({ ok: true });
 });
 
 export default route;

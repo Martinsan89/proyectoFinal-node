@@ -1,37 +1,43 @@
 import { Router } from "express";
-import { CartsManager } from "../db/cartsDB.js";
+import { cartsManager } from "../dao/managers/carts.manager.js";
+import { BadRequestException } from "../classes/errors/bad-request-exception.js";
+import { NotFoundException } from "../classes/errors/not-found-exception.js";
 
-const CartManager = new CartsManager("./data/carts.json");
 const route = Router();
 
-route.post("/", async (req, res) => {
-  const products = [];
-  const id = await CartManager.create(products);
-  if (!id) {
-    res.status(404).send({ error: "Ruta inválida" });
+route.post("/", async (req, res, next) => {
+  try {
+    const { _id } = await cartsManager.create();
+    res.status(201).send({ _id });
+  } catch (error) {
+    next(new BadRequestException());
   }
-  res.status(201).send({ id });
 });
 
-route.get("/:cId", async (req, res) => {
+route.get("/:cId", async (req, res, next) => {
   const { cId } = req.params;
-  const products = await CartManager.getById(cId);
-  if (products) {
+  try {
+    const products = await cartsManager.findById(cId);
     res.status(200).send({ products });
-  } else {
-    res.status(404).send({ Error: "Carrito no encontrado" });
+  } catch (error) {
+    next(new NotFoundException());
   }
 });
 
-route.post("/:cId/product/:pId", async (req, res) => {
+route.put("/:cId/product/:pId", async (req, res, next) => {
   const cartId = req.params.cId;
   const productId = req.params.pId;
-  const cart = await CartManager.addToCart(cartId, productId);
 
-  if (cart === "Carrito no encontrado") {
-    res.status(400).send({ cart });
-  } else {
+  try {
+    const cart = await cartsManager.findById(cartId);
+    cart.products.push(productId);
+    const result = await cartsManager.update(
+      { _id: cart.id },
+      { products: cart.products }
+    );
     res.status(201).send({ cart });
+  } catch (error) {
+    next(new BadRequestException());
   }
 });
 

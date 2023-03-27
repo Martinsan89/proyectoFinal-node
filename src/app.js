@@ -5,6 +5,11 @@ import viewsRoute from "./routes/views.route.js";
 import configureHandlebars from "./lib/hbs.middleware.js";
 import configureSocket from "./socket/configure-socket.js";
 import fileDirName from "./utils/fileDirName.js";
+import { ValidationError } from "./classes/errors/validation-error.js";
+import mongoose from "mongoose";
+import config from "./data.js";
+
+const { PORT, MONGO_URL } = config;
 
 const { __dirname } = fileDirName(import.meta);
 
@@ -21,9 +26,23 @@ app.use("/", viewsRoute);
 app.use("/api/products", productsRoute);
 app.use("/api/carts", cartsRoute);
 
-const port = 8080;
+app.use((error, req, res, next) => {
+  if (error instanceof ValidationError) {
+    return res.status(error.statusCode).json({
+      error: error.message,
+    });
+  }
+  res.status(500).json({ error });
+});
+
+const port = PORT;
 const httpServer = app.listen(port, () =>
   console.log(`servidor conectado desde el port numero ${port}`)
 );
 
 configureSocket(httpServer);
+
+mongoose.connect(MONGO_URL, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});

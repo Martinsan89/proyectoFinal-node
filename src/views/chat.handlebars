@@ -1,0 +1,18 @@
+<div class="container">
+    <h3 class="title">Mensajes</h3>
+    <div class="messages"></div>
+    <div class="input">
+        <input type="text" placeholder="Ingresa tu mail"
+        id="inputEmail">
+    </div>
+    <div class="input">
+        <input type="text" placeholder="Mensaje..."
+        id="inputMsg">
+    </div>
+    <div class="button">
+        <button id="btnSend" onclick="send(event)">Enviar</button>
+    </div>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script  src="js/chat.js"></script>

@@ -1,0 +1,43 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 60%;
+    margin: 5rem auto;
+}  
+
+.messages {
+    background-color: grey;
+    height: 10rem;
+    width: 100%;
+    overflow: auto;
+}
+
+.title {
+    width: 40%;
+    text-align: center;
+    margin: auto 1;
+    padding: .5rem 0 ;
+    border-bottom: 1px white solid;
+}
+
+.input {
+    margin: 2rem 0 ;
+    width: 100%;
+    text-align: center;
+}
+
+#inputEmail {
+    padding: .7rem;
+    width: 80%;
+}
+#inputMsg {
+    padding: .7rem;
+    width: 80%;
+}
+
+#btnSend {
+    padding: 1rem 2rem;
+    background-color: grey;
+    color: white;
+}
