@@ -17,7 +17,7 @@ export class MongoManager {
 
   async findById(id) {
     try {
-      const product = await this.model.findById(id);
+      const product = await this.model.findOne({ _id: id });
       return product;
     } catch (error) {
       throw error;
@@ -44,7 +44,7 @@ export class MongoManager {
 
   async update(id, entity) {
     try {
-      const newEntity = await this.model.findByIdAndUpdate(id, entity, {
+      const newEntity = await this.model.updateOne(id, entity, {
         returnOriginal: false,
       });
       return newEntity;

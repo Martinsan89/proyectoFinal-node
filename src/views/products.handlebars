@@ -1,0 +1,156 @@
+<div>
+    <div>
+        <a class="btn" href="/">HOME</a>
+    </div>
+    <div class="header">
+        <h1>Products</h1>
+    </div>
+    <div class="homeContainer">
+         <div style="margin-top: 2rem;">
+                <ul class="navContent">
+                    <a class="navLink" href="?sort=asc&status=true&category=running">Running</a>
+                    <a class="navLink" href="?sort=asc&status=true&category=trail">Trail</a>
+                    <a class="navLink" href="?sort=asc&status=true&category=training">Training</a>
+                </ul>
+            </div>
+        <div class="pagesContainer">
+                <h4>Total páginas {{pages}}</h4>
+        </div>
+        <div class="btnContainer">
+            <div class="pageBtn">
+                {{#if hasPrevPage}}
+                <a class="btn" href={{prevLink}}>&#60</a>
+                {{/if}}
+                <p style="margin: 0">Página {{page}}</p>
+                {{#if hasNextPage}}
+                <a class="btn" href={{nextLink}}>&#62</a>
+                {{/if}}
+            </div>
+            <div>
+                {{#if queryCategory}}
+                    <label>Ordenar por</label>
+                    <a href="http://localhost:8080/products/?sort=des&status=true&category={{queryCategory}}">
+                        <button class="btn">Mayor Precio</button>
+                    </a>
+                    <a href="http://localhost:8080/products/?sort=asc&status=true&category={{queryCategory}}">
+                        <button class="btn">Menor Precio</button>
+                    </a>
+                {{/if}}
+            </div>
+        </div>
+
+        <div class="productContainer">
+        {{#each products}}
+            <a style="text-decoration: none;" href='/productDetail/{{this._id}}'>
+                <div class="product" style="width: 100%">
+                    <div class="prodContent">
+                        <h3 class="prodItem">{{this.title}}</h3>
+                        <img class="prodImg" src="{{this.thumbnail}}" alt="{{this.code}}">
+                        <h4 class="prodItem"> {{this.description}}</h4>
+                        <h4 class="prodItem">${{this.price}}</h4>
+                    </div>
+                </div>
+            </a>
+        {{/each}}
+        </div>
+    </div>
+</div>
+
+<style>
+    * {
+    background-color: black;
+    color: white;
+}
+
+.header {
+    width: 95%;
+    margin: auto;
+    text-align: center;
+    padding: .5rem 0 ;
+    border-bottom: 1px white solid;
+}
+
+.navContent{
+    display: flex;
+    justify-content: space-around;
+}
+.navLink {
+    text-decoration: none;
+    font-size: 1.5rem;
+    gap: 2rem;
+}
+
+.homeContainer {
+    width: 95%;
+    margin: auto;
+}
+
+.pageContainer {
+    width: 60%;
+}
+
+.pageBtn{
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+.btnContainer {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    justify-content: space-between;
+}
+
+.btn {
+    color: black;
+    text-decoration: none;
+    background-color: white;
+    padding: 8px;
+    border-radius: 8px;
+}
+
+.productContainer{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.product {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 30%;
+    box-shadow: 1px 2px 0px 10px rgba(255,255,255,0.53);
+    -webkit-box-shadow: 1px 2px 0px 10px rgba(255,255,255,0.53);
+    -moz-box-shadow: 1px 2px 0px 10px rgba(255,255,255,0.53);
+    border-radius: 4rem;
+}
+
+.prodContent{
+    width: 80%;
+    background: none;
+}
+
+.prodItem {
+    text-align: center;
+    background: none;
+    height: 2rem;
+}
+
+.prodImg{
+    width: -webkit-fill-available;
+    height: 7rem;
+}
+
+.prodBtn {
+    padding: 1rem;
+    width: 100%;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+
+
+</style>

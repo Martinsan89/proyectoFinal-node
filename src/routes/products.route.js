@@ -3,19 +3,58 @@ import { BadRequestException } from "../classes/errors/bad-request-exception.js"
 import { NotFoundException } from "../classes/errors/not-found-exception.js";
 import { uploader } from "../utils/uploader.js";
 import { productsManager } from "../dao/managers/products.manager.js";
+import { productModel } from "../dao/models/products.models.js";
 
 const route = Router();
 
 route.get("/", async (req, res, next) => {
-  const { skip, limit, ...query } = req.query;
+  const query = req.query;
 
-  try {
-    const products = await productsManager.getAll(skip, limit, query);
-    res.status(200).send({ products });
-  } catch (error) {
-    next(new BadRequestException());
-  }
+  const options = {
+    page: query.page ?? 1,
+    limit: query.limit ?? 10,
+    lean: true,
+  };
+
+  const myAggregate = query.status
+    ? productModel.aggregate([
+        {
+          $sort: {
+            price: query.sort ? (query.sort === "asc" ? 1 : -1) : 1,
+          },
+        },
+        {
+          $match: {
+            $or: [
+              {
+                status: query.status ?? "true",
+              },
+              {
+                category: query.category ?? "all",
+              },
+            ],
+          },
+        },
+      ])
+    : productModel.aggregate();
+
+  await productModel
+    .aggregatePaginate(myAggregate, options)
+    .then(function (products) {
+      const productsList = products.docs;
+
+      if (productsList.length === 0) {
+        next(new NotFoundException());
+        return;
+      } else {
+        res.status(200).send({ productsList });
+      }
+    })
+    .catch(function (err) {
+      throw err;
+    });
 });
+
 route.get("/:idProduct", async (req, res, next) => {
   const productId = req.params.idProduct;
   try {
@@ -48,18 +87,6 @@ route.put("/:idProduct", uploader.single("file"), async (req, res, next) => {
     next(new NotFoundException());
   }
 });
-
-// route.patch("/:idProduct", async (req, res, next) => {
-//   const idProd = req.params.idProduct;
-//   const newData = req.body;
-
-//   try {
-//     const newProd = await productsManager.replace({ _id: idProd, newData });
-//     res.status(202).send({ newProd });
-//   } catch (error) {
-//     next(new NotFoundException());
-//   }
-// });
 
 route.delete("/:idProduct", async (req, res, next) => {
   const idProduct = req.params.idProduct;

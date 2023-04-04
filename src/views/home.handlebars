@@ -1,9 +1,64 @@
 <div>
-    <h1>Home</h1>
-    {{#each products}}
-    <h4>Name: {{title}}</h4>
-    <h6>Description: {{description}}</h6>
-    <p>${{price}}</p>
-    <hr>
-    {{/each}}
+    <div class="header">
+        <a href="/" style="text-decoration: none;">
+            <h1>Home</h1>
+        </a>
+        <div>
+            <ul class="navContent">
+                <a class="navLink" href="/products?sort=asc&status=true&category=running">Products</a>
+                <a class="navLink" href="/chat">Chat</a>
+            </ul>
+        </div>
+    </div>
+    <div class="homeContainer">
+        <div class="pagesContainer">
+            <h4>Total páginas {{pages}}</h4>
+        </div>
+        <div class="btnContainer">
+            <div class="pageBtn">
+                {{#if hasPrevPage}}
+                <a class="btn" href={{prevLink}}>&#60</a>
+                {{/if}}
+                <p style="margin: 0">Página {{page}}</p>
+                {{#if hasNextPage}}
+                <a class="btn" href={{nextLink}}>&#62</a>
+                {{/if}}
+            </div>
+            <div>
+                <label>Limit</label>
+                <a class="btn" href="/?limit=5">5</a>
+                <a class="btn" href="/?limit=3">3</a>
+            </div>
+            <div>
+                <label>Ordenar por</label>
+                <a href="http://localhost:8080/?sort=des&status=true">
+                    <button class="btn">Mayor Precio</button>
+                </a>
+                <a href="http://localhost:8080/?sort=asc&status=true">
+                    <button class="btn">Menor Precio</button>
+                </a>
+            </div>
+        </div>
+
+        <div class="productContainer">
+            {{#each products}}
+            <div class="product">
+                <div class="prodContent">
+                    <h3 class="prodItem">{{this.title}}</h3>
+                    <img class="prodImg" src="{{this.thumbnail}}" alt="{{this.code}}">
+                    <h4 class="prodItem"> {{this.description}}</h4>
+                    <h4 class="prodItem">${{this.price}}</h4>
+                    <button class="prodBtn" value={{this._id}} onclick="toCart(value)">Agregar al carrito</button>
+
+                </div>
+            </div>
+            {{/each}}
+
+        </div>
+
+    </div>
+
+
 </div>
+
+<script src="js/home.js"></script>

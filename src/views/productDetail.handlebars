@@ -1,0 +1,135 @@
+<div class="homeContainer">
+    <div>
+        <a class="btn" href="/">HOME</a>
+    </div>
+    <div class="productContainer">
+        <div class="product">
+            <div class="prodContent">
+                <h1>{{title}}</h1>
+                <p>{{description}}</p>
+                <img style="height: 7rem" src={{thumbnail}} alt={{code}}>
+                <p>Id= {{_id}}</p>
+                <p>Category= {{category}}</p>
+                <p>$ {{price}}</p>
+                <p>Stock= {{stock}}</p>
+            </div>
+        </div>
+
+    </div>
+    <div class="form">
+        <label>Quantity</label>
+        <input style="text-align: center;" type="number" id="quantity">
+        <button class="toCart" value={{_id}} onclick="addToCart(value)">Agregar al carrito</button>
+        
+    </div>
+    <div id="confirmMsg"></div>
+</div>
+
+{{!-- No pude hacerlo funcionar de esta manera me dice que addToCart no esta definido  --}}
+{{!-- <script src="js/products.js"></script> --}}
+
+
+<script>
+    const input = document.querySelector("#quantity");
+    const mensaje = document.querySelector("#confirmMsg");
+
+    async function addToCart(productId) {
+        // CartId hardcodeado 
+        const cartId = '6429a7910d2f27458090981f'
+
+        const quantity = input.value;
+
+        const response = await fetch(`http://localhost:8080/api/carts/${cartId}`, {
+        method: 'PUT',
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ 
+            productId, 
+            quantity})
+        })
+        
+        if(response.ok){
+            window.location.href = 'http://localhost:8080/carts/6429a7910d2f27458090981f'
+        }else {
+            mensaje.innerHTML = '<p>Error al agregar el producto al carrito</p>'
+        }
+    }
+</script>
+
+<style>
+    * {
+    background-color: black;
+    color: white;
+}
+
+.btn {
+    color: black;
+    text-decoration: none;
+    background-color: white;
+    padding: 8px;
+    border-radius: 8px;
+}
+
+.productContainer{
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+    justify-content: center;
+
+}
+
+.product {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 40%;
+    box-shadow: 1px 2px 0px 10px rgba(255,255,255,0.53);
+    -webkit-box-shadow: 1px 2px 0px 10px rgba(255,255,255,0.53);
+    -moz-box-shadow: 1px 2px 0px 10px rgba(255,255,255,0.53);
+    border-radius: 4rem;
+}
+
+.prodContent{
+    width: 100%;
+    background: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.prodItem {
+    text-align: center;
+    background: none;
+    height: 2rem;
+}
+
+.prodImg{
+    width: -webkit-fill-available;
+    height: 7rem;
+}
+
+.prodBtn {
+    padding: 1rem;
+    width: 100%;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.form{
+    width: 17%;
+    display: flex;
+    margin: 3rem auto;
+    flex-direction: column;
+    text-align: center;
+    padding: 1rem;
+    gap: 10px;
+}
+
+.toCart{
+    padding: 1rem;
+}
+
+
+</style>

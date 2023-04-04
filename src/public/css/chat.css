@@ -1,4 +1,4 @@
-.container {
+.chatContainer {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -13,13 +13,7 @@
     overflow: auto;
 }
 
-.title {
-    width: 40%;
-    text-align: center;
-    margin: auto 1;
-    padding: .5rem 0 ;
-    border-bottom: 1px white solid;
-}
+
 
 .input {
     margin: 2rem 0 ;
