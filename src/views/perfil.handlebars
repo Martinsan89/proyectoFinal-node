@@ -1,0 +1,35 @@
+<div >
+  <button onclick='logout()'>
+    Cerrar sesión
+  </button>
+  <div class='header'>
+    <h1>
+      Perfil
+    </h1>
+    <p>
+      Nombre:
+      {{nombre}}
+    </p>
+    <p>
+      Apellido:
+      {{apellido}}
+    </p>
+    <p>
+      Rol:
+      {{rol}}
+    </p>
+  </div>
+</div>
+  <script>
+    function logout() { api.post("/api/auth/logout"); }
+  </script>
+
+  <style>
+    .header {
+    width: 95%;
+    margin: auto;
+    text-align: center;
+    padding: .5rem 0 ;
+    border-bottom: 1px white solid;
+  }
+  </style>

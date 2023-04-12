@@ -1,0 +1,72 @@
+<div>
+  <div>
+    <a class="btnLogin" href="http://localhost:8080/login">to Login</a>
+  </div>
+  <div class="header">
+    <h1>
+      Registrar usuario
+    </h1>
+  </div>
+  <form class="form" onsubmit='send(event)'>
+    <input id='form-name' type='text' name='form-name' placeholder='Nombre' />
+    <input
+      id='form-last-name'
+      type='text'
+      name='form-last-name'
+      placeholder='Apellido'
+    />
+    <input
+      id='form-email'
+      type='text'
+      name='form-email'
+      placeholder='email'
+    />
+    <input id='form-edad' type='number' name='form-edad' placeholder='edad' />
+    <input
+      id='form-password'
+      type='password'
+      name='form-password'
+      placeholder='password'
+    />
+    <input class="btn" type='submit' value='Guardar Usuario' />
+  </form>
+  <p id='usuario-id'></p>
+</div>
+<script src='js/register.js'></script>
+
+<style>
+  .header {
+    width: 95%;
+    margin: auto;
+    text-align: center;
+    padding: .5rem 0 ;
+    border-bottom: 1px white solid;
+  }
+  .form {
+    width: 50%;
+    margin: auto;
+    text-align: center;
+    padding: 0.5rem 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .btn {
+    color: black;
+    text-decoration: none;
+    background-color: white;
+    padding: 8px;
+    border-radius: 8px;
+}
+.btnLogin{
+  width: 40%;
+  text-decoration: none;
+  color: black;
+    text-decoration: none;
+    background-color: white;
+    padding: 8px;
+    border-radius: 8px;
+}
+</style>

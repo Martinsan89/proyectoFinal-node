@@ -1,8 +1,14 @@
 <div>
     <div class="header">
+        <button onclick='logout()'>
+            Cerrar sesión
+        </button>
         <a href="/" style="text-decoration: none;">
             <h1>Home</h1>
         </a>
+         <div class="header">
+            <h3>Bienvenido {{nombre}} {{apellido}}!</h3>
+        </div>
         <div>
             <ul class="navContent">
                 <a class="navLink" href="/products?sort=asc&status=true&category=running">Products</a>

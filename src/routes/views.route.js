@@ -2,6 +2,8 @@ import { Router } from "express";
 import { productsManager } from "../dao/managers/products.manager.js";
 import { cartModel } from "../dao/models/carts.models.js";
 import { productModel } from "../dao/models/products.models.js";
+import { userModel } from "../dao/models/user.model.js";
+import { authenticated } from "../utils/middlewares/auth.js";
 
 const route = Router();
 
@@ -10,7 +12,7 @@ async function getCart(id) {
   return cart;
 }
 
-async function getProducts(query, res) {
+async function getProducts(query, redirection, res, user) {
   const options = {
     page: query.page ?? 1,
     limit: query.limit ?? 10,
@@ -47,8 +49,11 @@ async function getProducts(query, res) {
         res.render("notFound", { title: "Producto no encontrado" });
         return;
       } else {
-        return res.render("home", {
+        return res.render(redirection, {
           products: products.docs,
+          nombre: user.nombre,
+          apellido: user.apellido,
+          rol: user.rol,
           pages: products.totalPages,
           page: products.page,
           prev: products.prevPage,
@@ -77,10 +82,12 @@ async function getProducts(query, res) {
     });
 }
 
-route.get("/", async (req, res) => {
+route.get("/", authenticated, async (req, res) => {
   const query = req.query;
+  const user = req.user;
+  const redirection = "home";
 
-  await getProducts(query, res);
+  await getProducts(query, redirection, res, user);
 });
 
 route.get("/realtimeproducts", async (req, res) => {
@@ -92,10 +99,12 @@ route.get("/chat", async (req, res) => {
   res.render("chat");
 });
 
-route.get("/products", async (req, res) => {
+route.get("/products", authenticated, async (req, res) => {
   const query = req.query;
+  const user = req.user;
+  const redirection = "products";
 
-  await getProducts(query, res);
+  await getProducts(query, redirection, res, user);
 });
 
 route.get("/productDetail/:pId", async (req, res) => {
@@ -134,6 +143,28 @@ route.get("/carts/:cId", async (req, res) => {
     // throw error;
     res.render("notFound", { title: "Carrito no encontrado" });
   }
+});
+
+route.get("/register", (req, res) => {
+  const email = req.session.user;
+  if (email) {
+    return res.redirect("/products");
+  }
+  res.render("register");
+});
+
+route.get("/login", (req, res) => {
+  res.render("login");
+});
+
+route.get("/perfil", authenticated, async (req, res) => {
+  const user = req.user;
+
+  res.render("perfil", {
+    nombre: user.name,
+    apellido: user.apellido,
+    rol: user.rol,
+  });
 });
 
 export default route;
