@@ -70,7 +70,7 @@ route.put("/:cId", async (req, res, next) => {
   }
 });
 
-route.put("/:cId/product/:pId", async (req, res, next) => {
+route.put("/:cId/products/:pId", async (req, res, next) => {
   const cartId = req.params.cId;
   const pId = req.params.pId;
   const newQuantity = req.body;
@@ -116,7 +116,7 @@ route.delete("/:cId", async (req, res, next) => {
   }
 });
 
-route.delete("/:cId/product/:pId", async (req, res, next) => {
+route.delete("/:cId/products/:pId", async (req, res, next) => {
   const cartId = req.params.cId;
   const productId = req.params.pId;
 

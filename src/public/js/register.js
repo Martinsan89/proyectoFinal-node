@@ -7,7 +7,7 @@ async function send(event) {
   const password = document.getElementById("form-password").value;
 
   api
-    .post("/api/users", {
+    .post("/api/auth/register", {
       nombre,
       apellido,
       email,

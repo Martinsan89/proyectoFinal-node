@@ -10,6 +10,8 @@ import config from "./config.js";
 import cookieParser from "cookie-parser";
 import session from "express-session";
 import MongoStore from "connect-mongo";
+import { configurePassport } from "./config/passport.config.js";
+import passport from "passport";
 
 const { PORT, MONGO_URL, cookie_secret } = config;
 
@@ -36,10 +38,12 @@ app.use(
     saveUninitialized: true,
   })
 );
+configurePassport();
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
 app.use(express.static(__dirname + "/public"));
 
 app.use("/", viewsRoute);
