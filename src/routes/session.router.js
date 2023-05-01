@@ -1,4 +1,6 @@
 import { Router } from "express";
+import { userModel } from "../dao/models/user.model.js";
+import { passportCall } from "../utils/middlewares/auth.js";
 
 const route = Router();
 
@@ -40,6 +42,20 @@ route.get("/", (req, res) => {
         } veces`;
   res.send(mensaje);
 });
+
+route.get(
+  "/current",
+  passportCall("current"),
+  // authorization("ADMIN"),
+  async (req, res) => {
+    try {
+      const user = await userModel.findOne({ email: req.user.user.email });
+      res.send(user);
+    } catch (error) {
+      res.send(error);
+    }
+  }
+);
 
 //   app.get("/session", (req, res) => {
 //     if (req.session.counter) {

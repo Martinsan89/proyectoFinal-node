@@ -1,5 +1,13 @@
 import { Router } from "express";
+// import { Router } from "../classes/server/router.js";
 import { userModel } from "../dao/models/user.model.js";
+
+// class UsuarioRouter extends Router {
+//  constructor(){
+//    super('/users')
+// }
+// }
+// const router = new UsuarioRouter()
 
 const route = Router();
 

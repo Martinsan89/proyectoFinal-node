@@ -55,8 +55,8 @@ route.get("/", async (req, res, next) => {
     });
 });
 
-route.get("/:idProduct", async (req, res, next) => {
-  const productId = req.params.idProduct;
+route.get("/:pid", async (req, res, next) => {
+  const productId = req.params.pid;
   try {
     const product = await productsManager.findById(productId);
     res.status(200).send({ product });
@@ -76,8 +76,8 @@ route.post("/", uploader.single("file"), async (req, res, next) => {
   }
 });
 
-route.put("/:idProduct", uploader.single("file"), async (req, res, next) => {
-  const idProd = req.params.idProduct;
+route.put("/:pid", uploader.single("file"), async (req, res, next) => {
+  const idProd = req.params.pid;
   const newData = req.body;
 
   try {
@@ -88,8 +88,8 @@ route.put("/:idProduct", uploader.single("file"), async (req, res, next) => {
   }
 });
 
-route.delete("/:idProduct", async (req, res, next) => {
-  const idProduct = req.params.idProduct;
+route.delete("/:pid", async (req, res, next) => {
+  const idProduct = req.params.pid;
   try {
     await productsManager.delete({ _id: idProduct });
     res.status(200).send({ ok: true });
