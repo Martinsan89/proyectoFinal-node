@@ -1,6 +1,7 @@
 import passport from "passport";
 import { Strategy as GithubStrategy } from "passport-github2";
-import config from "../../config.js";
+import config from "../../../config.js";
+import { userModel } from "../../dao/models/user.model.js";
 
 export function githubStrategy() {
   passport.use(
@@ -28,6 +29,7 @@ export function githubStrategy() {
           }
           return done(null, user);
         } catch (error) {
+          console.log(error);
           done(error, false);
         }
       }

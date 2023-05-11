@@ -1,101 +1,25 @@
 import { Router } from "express";
-import { BadRequestException } from "../classes/errors/bad-request-exception.js";
-import { NotFoundException } from "../classes/errors/not-found-exception.js";
+import productsController from "../controllers/products.controller.js";
 import { uploader } from "../utils/uploader.js";
-import { productsManager } from "../dao/managers/products.manager.js";
-import { productModel } from "../dao/models/products.models.js";
 
 const route = Router();
 
-route.get("/", async (req, res, next) => {
-  const query = req.query;
+route.get("/", productsController.aggregatePaginate.bind(productsController));
 
-  const options = {
-    page: query.page ?? 1,
-    limit: query.limit ?? 10,
-    lean: true,
-  };
+route.get("/:pid", productsController.findById.bind(productsController));
 
-  const myAggregate = query.status
-    ? productModel.aggregate([
-        {
-          $sort: {
-            price: query.sort ? (query.sort === "asc" ? 1 : -1) : 1,
-          },
-        },
-        {
-          $match: {
-            $or: [
-              {
-                status: query.status ?? "true",
-              },
-              {
-                category: query.category ?? "all",
-              },
-            ],
-          },
-        },
-      ])
-    : productModel.aggregate();
+route.post(
+  "/",
+  uploader.single("file"),
+  productsController.create.bind(productsController)
+);
 
-  await productModel
-    .aggregatePaginate(myAggregate, options)
-    .then(function (products) {
-      const productsList = products.docs;
+route.put(
+  "/:pid",
+  uploader.single("file"),
+  productsController.update.bind(productsController)
+);
 
-      if (productsList.length === 0) {
-        next(new NotFoundException());
-        return;
-      } else {
-        res.status(200).send({ productsList });
-      }
-    })
-    .catch(function (err) {
-      throw err;
-    });
-});
-
-route.get("/:pid", async (req, res, next) => {
-  const productId = req.params.pid;
-  try {
-    const product = await productsManager.findById(productId);
-    res.status(200).send({ product });
-  } catch (error) {
-    next(new NotFoundException());
-  }
-});
-
-route.post("/", uploader.single("file"), async (req, res, next) => {
-  const product = req.body;
-
-  try {
-    const { _id } = await productsManager.create(product);
-    res.status(201).send({ id: _id });
-  } catch (error) {
-    next(new BadRequestException());
-  }
-});
-
-route.put("/:pid", uploader.single("file"), async (req, res, next) => {
-  const idProd = req.params.pid;
-  const newData = req.body;
-
-  try {
-    const newProd = await productsManager.update(idProd, newData);
-    res.status(202).send({ newProd });
-  } catch (error) {
-    next(new NotFoundException());
-  }
-});
-
-route.delete("/:pid", async (req, res, next) => {
-  const idProduct = req.params.pid;
-  try {
-    await productsManager.delete({ _id: idProduct });
-    res.status(200).send({ ok: true });
-  } catch (error) {
-    next(new NotFoundException());
-  }
-});
+route.delete("/:pid", productsController.delete.bind(productsController));
 
 export default route;

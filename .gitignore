@@ -6,4 +6,3 @@ __FilesPrueba__
 src/views/index.handlebars
 .env
 src/routes/jwt.router.js
-.env.example

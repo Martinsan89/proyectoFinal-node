@@ -14,6 +14,5 @@ route.use("/session", sessionRouter);
 route.use("/users", usersRouter);
 
 route.use("/auth", authRouter);
-route.use("/jwt", jwtRouter);
 
 export default route;

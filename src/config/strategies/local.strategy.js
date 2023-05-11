@@ -50,7 +50,8 @@ export function localStrategy() {
             // console.log("Contraseña incorrecta");
             return done(null, false, { message: "User or password incorrect" });
           }
-          return done(null, user._doc);
+          // req.user = user;
+          return done(null, user);
         } catch (error) {
           done(error, false);
         }

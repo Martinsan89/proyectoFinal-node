@@ -6,14 +6,14 @@ import configureSocket from "./socket/configure-socket.js";
 import fileDirName from "./utils/fileDirName.js";
 import { ValidationError } from "./classes/errors/validation-error.js";
 import mongoose from "mongoose";
-import config from "./config.js";
+import config from "../config.js";
 import cookieParser from "cookie-parser";
 import session from "express-session";
 import MongoStore from "connect-mongo";
 import { configurePassport } from "./config/passport.config.js";
 import passport from "passport";
 
-const { PORT, MONGO_URL, cookie_secret } = config;
+const { PORT, mongo_url, cookie_secret } = config;
 
 const { __dirname } = fileDirName(import.meta);
 
@@ -26,7 +26,7 @@ app.use(cookieParser());
 app.use(
   session({
     store: MongoStore.create({
-      mongoUrl: MONGO_URL,
+      mongoUrl: mongo_url,
       mongoOptions: {
         useNewUrlParser: true,
         useUnifiedTopology: true,
@@ -65,7 +65,7 @@ const httpServer = app.listen(port, () =>
 
 configureSocket(httpServer);
 
-mongoose.connect(MONGO_URL, {
+mongoose.connect(mongo_url, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });

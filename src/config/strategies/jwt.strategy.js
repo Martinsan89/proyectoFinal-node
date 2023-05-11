@@ -1,6 +1,6 @@
 import passport from "passport";
 import { ExtractJwt, Strategy as JWTStrategy } from "passport-jwt";
-import config from "../../config.js";
+import config from "../../../config.js";
 
 export function jwtStrategy() {
   passport.use(
@@ -15,7 +15,7 @@ export function jwtStrategy() {
       },
       (payload, done) => {
         try {
-          console.log(payload);
+          // console.log(payload);
           return done(null, payload);
         } catch (error) {
           done(err, false);
