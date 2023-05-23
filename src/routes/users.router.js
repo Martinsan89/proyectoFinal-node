@@ -2,7 +2,7 @@ import { Router } from "express";
 import usersController from "../controllers/users.controller.js";
 const route = Router();
 
-route.get("/", usersController.paginate.bind(usersController));
+route.get("/", usersController.find.bind(usersController));
 
 route.get("/:idUsuario", usersController.findById.bind(usersController));
 

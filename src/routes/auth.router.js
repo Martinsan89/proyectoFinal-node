@@ -1,7 +1,7 @@
 import { Router } from "express";
 import passport from "passport";
 import authController from "../controllers/auth.controller.js";
-import { authenticated, passportCall } from "../utils/middlewares/auth.js";
+import { passportCall } from "../utils/middlewares/auth.js";
 
 const route = Router();
 

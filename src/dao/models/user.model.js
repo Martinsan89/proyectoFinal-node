@@ -7,17 +7,16 @@ export const userCollection = "usuarios";
 const userSchema = new mongoose.Schema({
   first_name: { type: String, required: true },
   last_name: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
+  email: { type: String, required: true, unique: true, index: true },
+  phone: { type: Number, required: true },
   age: { type: Number, required: true },
   password: { type: String },
   cart: {
     type: [
       {
-        id: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: cartCollections,
-          default: null,
-        },
+        type: mongoose.Schema.Types.ObjectId,
+        ref: cartCollections,
+        default: null,
       },
     ],
   },

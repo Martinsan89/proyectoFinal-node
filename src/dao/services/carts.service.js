@@ -1,6 +1,6 @@
-import { cartModel } from "../dao/models/carts.models.js";
+import { cartModel } from "../models/carts.models.js";
 
-class ProductsService {
+class CartsService {
   #model;
   constructor() {
     this.#model = cartModel;
@@ -15,12 +15,12 @@ class ProductsService {
   }
 
   async findById(id) {
-    return this.#model.findById(id);
+    return this.#model.findOne({ _id: id }).lean();
   }
 
   async update(id, data) {
-    await this.#model.updateOne({ _id: id }, data);
-    const updateData = await this.#model.findById(id);
+    await this.#model.updateOne({ _id: id }, { $set: data });
+    const updateData = await this.#model.findOne({ _id: id });
     return updateData;
   }
 
@@ -29,4 +29,4 @@ class ProductsService {
   }
 }
 
-export default ProductsService;
+export default CartsService;

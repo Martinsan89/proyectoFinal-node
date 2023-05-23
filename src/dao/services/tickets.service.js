@@ -1,9 +1,9 @@
-import { productModel } from "../dao/models/products.models.js";
+import { ticketModel } from "../models/ticket.model.js";
 
-class ProductsService {
+class TicketsService {
   #model;
   constructor() {
-    this.#model = productModel;
+    this.#model = ticketModel;
   }
 
   async create(data) {
@@ -12,6 +12,10 @@ class ProductsService {
 
   async find(myAggregate, options) {
     return this.#model.aggregatePaginate(myAggregate, options);
+  }
+
+  async aggregate(aggregateSearch) {
+    return this.#model.aggregate(aggregateSearch);
   }
 
   async findById(id) {
@@ -29,4 +33,4 @@ class ProductsService {
   }
 }
 
-export default ProductsService;
+export default TicketsService;

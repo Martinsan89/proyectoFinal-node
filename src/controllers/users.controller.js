@@ -1,12 +1,19 @@
-import UsersService from "../services/users.service.js";
 import { createHash } from "../utils/crypto.js";
+import DaoFactory from "../dao/persistenceFactory.js";
+import Subject from "../utils/subject.js";
+import { RegisterUserMailObserver } from "../dao/observers/register-user.mail.observer.js";
+import { RegisterUserSmsObserver } from "../dao/observers/register-user.sms.observer.js";
 
 class UsersController {
+  #registerSubject = new Subject();
   #service;
-  constructor(service) {
+  #cartsService;
+  constructor(service, cartsService) {
     this.#service = service;
+    this.#cartsService = cartsService;
+    this.#configureObservers();
   }
-  async paginate(req, res, next) {
+  async find(req, res, next) {
     const { skip, limit, ...query } = req.query;
 
     try {
@@ -14,6 +21,7 @@ class UsersController {
         skip: Number(skip ?? 0),
         limit: Number(limit ?? 10),
       });
+
       res.send({
         usuarios: usuarios.docs,
         total: usuarios.totalDocs,
@@ -45,15 +53,13 @@ class UsersController {
   }
 
   async create(req, res, next) {
-    const email = req.session.user;
-    if (email) {
-      return res.redirect("/perfil");
-    }
     const usuario = req.body;
+    const createCart = await this.#cartsService.create();
     const newUser = { ...usuario, password: createHash(usuario.password) };
 
     try {
       const { _id } = await this.#service.create(newUser);
+      this.#registerSubject.notify({ _id, ...newUser });
 
       res.status(201).send({ id: _id });
     } catch (error) {
@@ -93,7 +99,19 @@ class UsersController {
       next(error);
     }
   }
+
+  #configureObservers() {
+    this.#registerSubject.suscribe(new RegisterUserMailObserver());
+    this.#registerSubject.suscribe(new RegisterUserSmsObserver());
+  }
 }
 
-const controller = new UsersController(new UsersService());
+const DaoService = await DaoFactory.getDao();
+const productsService = await DaoService.getService("users");
+const cartsService = await DaoService.getService("carts");
+
+const controller = new UsersController(
+  new productsService(),
+  new cartsService()
+);
 export default controller;

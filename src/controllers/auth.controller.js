@@ -1,7 +1,7 @@
-import ProductsService from "../services/products.service.js";
 import { createHash } from "../utils/crypto.js";
 import jwt from "jsonwebtoken";
 import config from "../../config.js";
+import DaoFactory from "../dao/persistenceFactory.js";
 
 const SECRET = config.jwt_token;
 
@@ -12,32 +12,37 @@ function generateToken(user) {
 
 class AuthController {
   #service;
-  constructor(service) {
+  #cartService;
+  constructor(service, cartService) {
     this.#service = service;
+    this.#cartService = cartService;
   }
 
   async login(req, res) {
-    const user = req.user;
-    const token = generateToken({
-      id: user._id,
-      email: user.email,
-    });
-    res.cookie("jwt", token, {
-      httpOnly: true,
-      maxAge: 3600000,
-    });
-    // res.send({ user: req.user });
-    res.redirect("/");
+    try {
+      const user = req.user;
+      const { _id } = await this.#cartService.create();
+
+      const token = generateToken({
+        id: user._id,
+        email: user.email,
+        role: user.role,
+        cart: _id,
+        phone: user.phone,
+      });
+      res.cookie("jwt", token, {
+        httpOnly: true,
+        maxAge: 3600000,
+      });
+      res.send({ user: req.user });
+    } catch (error) {
+      console.log("authcontroller", error);
+    }
   }
 
   async logout(req, res) {
-    req.session.destroy((err) => {
-      if (err) {
-        res.status(500).send({ error: err });
-      } else {
-        res.redirect("/login");
-      }
-    });
+    res.clearCookie("jwt");
+    res.redirect("/login");
   }
 
   async register(req, res) {
@@ -73,5 +78,12 @@ class AuthController {
   }
 }
 
-const controller = new AuthController(new ProductsService());
+const DaoService = await DaoFactory.getDao();
+const productsService = await DaoService.getService("products");
+const cartsService = await DaoService.getService("carts");
+
+const controller = new AuthController(
+  new productsService(),
+  new cartsService()
+);
 export default controller;

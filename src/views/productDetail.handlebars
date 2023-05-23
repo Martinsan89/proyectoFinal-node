@@ -19,7 +19,7 @@
     <div class="form">
         <label>Quantity</label>
         <input style="text-align: center;" type="number" id="quantity">
-        <button class="toCart" value={{_id}} onclick="addToCart(value)">Agregar al carrito</button>
+        <button class="toCart" data-cart={{cart}} value={{ _id}} onclick="addToCart(value)">Agregar al carrito</button>
         
     </div>
     <div id="confirmMsg"></div>
@@ -32,10 +32,9 @@
 <script>
     const input = document.querySelector("#quantity");
     const mensaje = document.querySelector("#confirmMsg");
+    const cartId = document.querySelector(".toCart").getAttribute('data-cart');
 
-    async function addToCart(productId) {
-        // CartId hardcodeado 
-        const cartId = '6429a7910d2f27458090981f'
+    async function addToCart(product) {
 
         const quantity = input.value;
 
@@ -45,12 +44,13 @@
             "Content-Type": "application/json",
         },
         body: JSON.stringify({ 
-            productId, 
+            product, 
             quantity})
         })
+        console.log(response)
         
         if(response.ok){
-            window.location.href = 'http://localhost:8080/carts/6429a7910d2f27458090981f'
+            window.location.href = `http://localhost:8080/carts/${cartId}`
         }else {
             mensaje.innerHTML = '<p>Error al agregar el producto al carrito</p>'
         }

@@ -1,7 +1,6 @@
 import { Router } from "express";
-// import { cartsManager } from "../dao/managers/carts.manager.js";
-// import { cartModel } from "../dao/models/carts.models.js";
 import cartsController from "../controllers/carts.controller.js";
+import { authorization, passportCall } from "../utils/middlewares/auth.js";
 
 const route = Router();
 
@@ -11,10 +10,17 @@ route.get("/", cartsController.get.bind(cartsController));
 
 route.get("/:cId", cartsController.findById.bind(cartsController));
 
-route.put("/:cId", cartsController.update.bind(cartsController));
+route.put(
+  "/:cId",
+  passportCall("current"),
+  authorization("user"),
+  cartsController.update.bind(cartsController)
+);
 
 route.post(
   "/:cId/product/:pId",
+  passportCall("current"),
+  authorization("user"),
   cartsController.updateProdInCart.bind(cartsController)
 );
 
@@ -23,6 +29,13 @@ route.delete("/:cId", cartsController.delete.bind(cartsController));
 route.delete(
   "/:cId/product/:pId",
   cartsController.deleteProdInCart.bind(cartsController)
+);
+
+route.post(
+  "/:cId/purchase",
+  passportCall("current"),
+  authorization("user"),
+  cartsController.purchase.bind(cartsController)
 );
 
 export default route;

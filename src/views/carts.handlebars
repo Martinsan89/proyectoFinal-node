@@ -11,18 +11,41 @@
         {{#each products}}
             <div class="product">
                 <div class="productContent">
-                    <h3 class="prodItem">{{this.productId.title}}</h3>
-                    <img class="prodImg" src={{this.productId.thumbnail}} alt={{this.productId.title}}>
-                    <h4 class="prodItem">Code: {{this.productId.code}}</h4>
-                    <h4 class="prodItem">Description: {{this.productId.description}}</h4>
-                    <h4 class="prodItem">$ {{this.productId.price}}</h4>
-                    <h4 class="prodItem">Quantity: {{this.quantity}}</h4>
+                    <h3 class="prodItem">{{this.title}}</h3>
+                    <img class="prodImg" src={{this.thumbnail}} alt={{this.title}}>
+                    <h4 class="prodItem">Code: {{this.code}}</h4>
+                    <h4 class="prodItem">Description: {{this.description}}</h4>
+                    <h4 class="prodItem">$ {{this.price}}</h4>
+                    {{#each quantity}}
+                    <h4 class="prodItem">Quantity: {{this.qty}}</h4>
+                    {{/each}}
                 </div>
             </div>
         {{/each}}
         </div>
     </div>
+    <div>
+        <button class="btn" value={{cId}} onclick="purchase(value)">Buy products</button>
+    </div>
+    <div id="confirmMsg"></div>
 </div>
+
+<script>
+
+    const mensaje = document.querySelector("#confirmMsg");
+    async function purchase(value){
+        const response = await fetch(`http://localhost:8080/api/carts/${value}/purchase`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    response
+      .json()
+      .then((d) => mensaje.innerHTML = '<p>Compra realiza con éxito</p>')
+      .catch((err) => mensaje.innerHTML = `<p>${err}</p>`)
+    }
+</script>
 
 <style>
        * {

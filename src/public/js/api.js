@@ -7,15 +7,8 @@ const api = {
         "Content-Type": "application/json",
       },
     });
-    // console.log(response);
-    if (response.redirected) {
-      window.location.replace(response.url);
-      // console.log(response.redirected);
-    }
-    if (response.ok) {
-      return response.json();
-    }
-    response.json().then((d) => alert(JSON.stringify(d)));
+    return response.json();
+    // .then((d) => window.location.replace("http://localhost:8080/login"));
   },
   get: async (url) => {
     const response = await fetch(url, {

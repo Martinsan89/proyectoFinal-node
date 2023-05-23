@@ -1,4 +1,4 @@
-import { userModel } from "../dao/models/user.model.js";
+import { userModel } from "../models/user.model.js";
 
 class UsersService {
   #model;
@@ -18,9 +18,13 @@ class UsersService {
     return this.#model.findById(id);
   }
 
+  async findOne(email) {
+    return this.#model.findOne({ email: email });
+  }
+
   async update(id, data) {
-    await this.#model.updateOne({ _id: id }, data);
-    const updateData = await this.findById(id);
+    await this.#model.updateOne({ _id: id }, { $set: data });
+    const updateData = await this.#model.findOne(id);
     return updateData;
   }
 

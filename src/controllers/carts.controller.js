@@ -1,17 +1,23 @@
-import { cartModel } from "../dao/models/carts.models.js";
-import CartsService from "../services/carts.service.js";
 import { BadRequestException } from "../classes/errors/bad-request-exception.js";
 import { NotFoundException } from "../classes/errors/not-found-exception.js";
-
-async function getCart(id) {
-  const cart = await cartModel.findOne({ _id: id });
-  return cart;
-}
+import DaoFactory from "../dao/persistenceFactory.js";
+import crypto from "crypto";
 
 class CartsController {
   #service;
-  constructor(service) {
+  #ticketService;
+  #productsService;
+  #usersService;
+  constructor(service, ticketService, productsService, usersService) {
     this.#service = service;
+    this.#ticketService = ticketService;
+    this.#productsService = productsService;
+    this.#usersService = usersService;
+  }
+
+  async getCart(id) {
+    const cart = await this.#service.findById(id);
+    return cart;
   }
   async get(req, res, next) {
     try {
@@ -25,7 +31,7 @@ class CartsController {
   async findById(req, res, next) {
     const cId = req.params.cId;
     try {
-      const cart = await getCart(cId);
+      const cart = await this.getCart(cId);
       if (!cart) {
         next(new BadRequestException());
         return;
@@ -33,6 +39,7 @@ class CartsController {
         res.status(200).send({ cart });
       }
     } catch (error) {
+      console.log(error);
       next(new NotFoundException());
     }
   }
@@ -42,6 +49,7 @@ class CartsController {
       const { _id } = await this.#service.create();
       res.status(201).send({ _id });
     } catch (error) {
+      console.log(error);
       next(new BadRequestException());
     }
   }
@@ -49,25 +57,30 @@ class CartsController {
   async update(req, res, next) {
     const cartId = req.params.cId;
     const productsInCart = req.body;
+    const userId = req.user.user.id;
 
     try {
-      if (!productsInCart.productId) {
+      if (!productsInCart.product) {
         next(new BadRequestException());
         return;
       } else {
-        const cart = await getCart(cartId);
+        const cart = await this.getCart(cartId);
         if (!cart) {
           next(new NotFoundException());
         } else {
           cart.products.push(productsInCart);
-          await this.#service.update(
-            { _id: cart.id },
-            { products: cart.products }
-          );
-          res.status(200).send({ cart });
+          const newCart = cart.products;
+          // console.log("push", cart);
+          const newCartRes = await this.#service.update(cartId, {
+            products: newCart,
+          });
+          // console.log("newCart-------", newCartRes.products);
+          res.status(200).send({ newCartRes });
         }
       }
     } catch (error) {
+      console.log(error);
+
       next(new BadRequestException());
     }
   }
@@ -143,7 +156,72 @@ class CartsController {
       next(new NotFoundException());
     }
   }
+
+  async purchase(req, res, next) {
+    const cartId = req.params.cId;
+    const cart = await this.getCart(cartId);
+    const prodOk = [];
+    const prodFail = [];
+    const userEmail = req.user.user.email;
+    const userId = req.user.user.id;
+    const code = crypto.randomUUID();
+    const date = new Date().toLocaleString();
+
+    if (cart) {
+      cart.products.map((e) => {
+        e.product.stock >= e.quantity ? prodOk.push(e) : prodFail.push(e);
+      });
+    }
+
+    if (prodOk.length > 0) {
+      const totalProd = [];
+      prodOk.map(async (e) => {
+        totalProd.push(e.product.price * e.quantity);
+        const newQty = e.product.stock - e.quantity;
+        const prodStockUpdated = await this.#productsService.update(
+          e.product._id,
+          { stock: newQty }
+        );
+        // console.log("stock updated ---------", prodStockUpdated);
+      });
+      const ticket = {
+        code: code,
+        purchase_datetime: date,
+        amount: totalProd.reduce((acc, num) => acc + num),
+        purchaser: userEmail,
+      };
+      const { _id } = await this.#ticketService.create(ticket);
+      const prodFailIDs = prodFail.map((e) => e.product._id);
+
+      const updateCart = await this.#service.update(cartId, {
+        products: prodFail,
+      });
+      console.log("ticket ---------", _id);
+
+      // actualizar el cart del usuario
+      // const user = await this.#usersService.findById(userId);
+      // user.cart.push(cartId);
+      // const newUserCart = user.cart;
+      // const addCartIdToUser = await this.#usersService.update(userId, {
+      //   cart: newUserCart,
+      // });
+      // console.log("user id--------", addCartIdToUser);
+
+      res.send({ ProductsFail: prodFailIDs });
+    }
+  }
 }
 
-const controller = new CartsController(new CartsService());
+const DaoService = await DaoFactory.getDao();
+const cartsService = await DaoService.getService("carts");
+const ticketService = await DaoService.getService("tickets");
+const productsService = await DaoService.getService("products");
+const usersService = await DaoService.getService("users");
+
+const controller = new CartsController(
+  new cartsService(),
+  new ticketService(),
+  new productsService(),
+  new usersService()
+);
 export default controller;

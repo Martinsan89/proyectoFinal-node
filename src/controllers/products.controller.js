@@ -1,14 +1,16 @@
-import { productModel } from "../dao/models/products.models.js";
 import { BadRequestException } from "../classes/errors/bad-request-exception.js";
 import { NotFoundException } from "../classes/errors/not-found-exception.js";
-import ProductsService from "../services/products.service.js";
+import DaoFactory from "../dao/persistenceFactory.js";
+import config from "../../config.js";
+
+const { PERSISTENCE } = config;
 
 class ProductsController {
   #service;
   constructor(service) {
     this.#service = service;
   }
-  async aggregatePaginate(req, res, next) {
+  async getAll(req, res, next) {
     const query = req.query;
 
     const options = {
@@ -17,8 +19,8 @@ class ProductsController {
       lean: true,
     };
 
-    const myAggregate = query.status
-      ? productModel.aggregate([
+    const myAggregate = query
+      ? this.#service.aggregate([
           {
             $sort: {
               price: query.sort ? (query.sort === "asc" ? 1 : -1) : 1,
@@ -37,14 +39,14 @@ class ProductsController {
             },
           },
         ])
-      : productModel.aggregate();
+      : this.#service.aggregate();
 
     await this.#service
       .find(myAggregate, options)
       .then(function (products) {
-        const productsList = products.docs;
+        const productsList = PERSISTENCE === "MONGO" ? products.docs : products;
 
-        if (productsList.length === 0) {
+        if (productsList?.length === 0) {
           next(new NotFoundException());
           return;
         } else {
@@ -52,7 +54,7 @@ class ProductsController {
         }
       })
       .catch(function (err) {
-        throw err;
+        console.log(err);
       });
   }
 
@@ -71,8 +73,10 @@ class ProductsController {
 
     try {
       const { _id } = await this.#service.create(product);
+      console.log(_id);
       res.status(201).send({ id: _id });
     } catch (error) {
+      console.log(error);
       next(new BadRequestException());
     }
   }
@@ -93,12 +97,16 @@ class ProductsController {
     const idProduct = req.params.pid;
     try {
       await this.#service.delete({ _id: idProduct });
-      res.status(200).send({ ok: true });
     } catch (error) {
       next(new NotFoundException());
     }
+    res.status(200).send({ ok: true });
   }
 }
 
-const controller = new ProductsController(new ProductsService());
+const DaoService = await DaoFactory.getDao();
+const productsService = await DaoService.getService("products");
+
+const controller = new ProductsController(new productsService());
+
 export default controller;
