@@ -5,8 +5,8 @@ import { passportCall, authorization } from "../utils/middlewares/auth.js";
 const route = Router();
 
 route.get(
-  "/",
-  passportCall("current"),
+  // "/",
+  // passportCall("current"),
   viewsController.home.bind(viewsController)
 );
 

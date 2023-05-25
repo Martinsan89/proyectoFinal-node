@@ -20,8 +20,8 @@ route.get(
 route.post(
   "/",
   uploader.single("file"),
-  // passportCall("current"),
-  // authorization("admin"),
+  passportCall("current"),
+  authorization("admin"),
   validateBody(validator(ProductDto)),
   productsController.create.bind(productsController)
 );
@@ -37,8 +37,8 @@ route.put(
 
 route.delete(
   "/:pid",
-  // passportCall("current"),
-  // authorization("admin"),
+  passportCall("current"),
+  authorization("admin"),
   validateParams(validator(Id)),
   productsController.delete.bind(productsController)
 );

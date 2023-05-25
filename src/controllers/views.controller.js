@@ -89,6 +89,7 @@ class ViewsController {
   async home(req, res) {
     const query = req.query;
     const id = req.user?.user?.id;
+    console.log("view.js", req.user);
     if (!id) {
       res.redirect("/login");
       return;

@@ -12,6 +12,7 @@ import MongoStore from "connect-mongo";
 import { configurePassport } from "./config/passport.config.js";
 import passport from "passport";
 import cors from "cors";
+import cookieSession from "cookie-session";
 
 const { PORT, mongo_url, cookie_secret, PERSISTENCE } = config;
 
@@ -23,8 +24,6 @@ configureHandlebars(app);
 
 app.use(cookieParser());
 app.use(cors());
-
-const storeCookie = [];
 
 PERSISTENCE === "MONGO"
   ? app.use(
@@ -44,6 +43,9 @@ PERSISTENCE === "MONGO"
     )
   : app.use(
       session({
+        name: "Session FileSystem",
+        httpOnly: true,
+        expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
         secret: cookie_secret,
         resave: true,
         saveUninitialized: true,
