@@ -1,7 +1,4 @@
-import ErrorEnum from "../errors/errors.enum.js";
-
 export default (error, res, req, next) => {
-  console.log(error);
   switch (Math.floor(error.code / 100)) {
     case 1: //Errores de entrada
       // console.log("case 1 ------", error);

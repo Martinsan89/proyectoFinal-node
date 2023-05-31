@@ -78,18 +78,14 @@ class ProductsController {
       res.status(201).send({ id: _id });
     } catch (error) {
       // console.log(error.errors);
-      // CustomError.createError({
-      //   name: "ValidationError",
-      //   cause: error.errors,
-      //   message: JSON.stringify(
-      //     error.errors.map((e) => ({
-      //       property: e.path.join("."),
-      //       issue: e.message,
-      //     }))
-      //   ),
-      //   code: ErrorEnum.INVALID_TYPES_ERROR,
-      // }),
-      // next();
+      CustomError.createError({
+        name: "ValidationError",
+        cause: "Prueba",
+        message: JSON.stringify({
+          test: 1,
+        }),
+        code: ErrorEnum.INVALID_TYPES_ERROR,
+      });
     }
   }
 

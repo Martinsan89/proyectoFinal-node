@@ -12,8 +12,8 @@ import MongoStore from "connect-mongo";
 import { configurePassport } from "./config/passport.config.js";
 import passport from "passport";
 import cors from "cors";
-import errorMiddleware from "./middlewares/error.middleware.js";
 import { generateUser } from "../mock.js";
+import errorMiddleware from "./middlewares/error.middleware.js";
 import customResponseMiddleware from "./middlewares/custom-response.middleware.js";
 
 const { PORT, mongo_url, cookie_secret, PERSISTENCE } = config;
