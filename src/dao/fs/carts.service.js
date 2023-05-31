@@ -6,8 +6,10 @@ const { __dirname } = fileDirName(import.meta);
 
 class CartsService {
   #path;
+  #productsPath;
   constructor() {
     this.#path = __dirname + "/db/cartsDb.json";
+    this.#productsPath = __dirname + "/db/productsDb.json";
   }
 
   async find() {
@@ -19,41 +21,55 @@ class CartsService {
     }
   }
 
-  async create(products) {
-    const id = randomUUID();
+  async create() {
+    const _id = randomUUID();
+    const products = [];
     const cartsList = await this.find();
-    const newProductsList = [...cartsList, { id, products }];
+    const newProductsList = [...cartsList, { _id, products }];
     const newProductsListToString = JSON.stringify(newProductsList);
     await fs.promises.writeFile(this.#path, newProductsListToString);
-    return id;
+    return { _id: _id };
   }
 
-  async findById(id) {
+  async findById(_id) {
     const cartsList = await this.find();
-    const findCart = cartsList.find((p) => p?.id === id);
-    return findCart?.products;
+    const findCart = cartsList.find((p) => p?._id === _id);
+    // console.log("findCart", findCart);
+
+    if (findCart?.products.length >= 1) {
+      const products = await fs.promises.readFile(this.#productsPath);
+      const prodList = JSON.parse(products);
+      const prodCart = findCart.products.map((e) => {
+        const prod = prodList.find((p) => p._id === e.product);
+        return prod;
+      });
+
+      // console.log("cart service,js", prodCart);
+      return { _id: findCart._id, products: [{ product: { ...prodCart } }] };
+    }
+    return findCart;
   }
 
   async update(cId, pId) {
     const cartsList = await this.find();
-    const cart = cartsList.find((p) => p?.id === cId);
-    const product = cart?.products.find((p) => p.pId === pId);
-
+    const cart = cartsList.find((p) => p?._id === cId);
+    const product = cart?.products.find((p) => p._id === pId.products.product);
     if (!cart) {
       return "Carrito no encontrado";
     }
 
     if (cart?.products.length === 0) {
-      cart.products.push({ pId, quantity: 1 });
+      cart.products.push(...pId.products);
     } else {
-      if (product?.pId === pId) {
-        product.quantity++;
+      if (product?._id === pId.products.product) {
+        product.quantity = +product.quantity + +pId.products.at(-1).quantity;
       } else {
-        cart?.products.push({ pId, quantity: 1 });
+        cart?.products.push(...pId.products);
       }
     }
     const newCartsList = [...cartsList];
     const newCartListToString = JSON.stringify(newCartsList);
+    // console.log("cartsservice.js", pId.products);
     await fs.promises.writeFile(this.#path, newCartListToString);
     return cart;
   }

@@ -2,6 +2,7 @@ import { BadRequestException } from "../classes/errors/bad-request-exception.js"
 import { NotFoundException } from "../classes/errors/not-found-exception.js";
 import DaoFactory from "../dao/persistenceFactory.js";
 import config from "../../config.js";
+import CustomError from "../errors/custom.errors.js";
 
 const { PERSISTENCE } = config;
 
@@ -76,8 +77,19 @@ class ProductsController {
       console.log(_id);
       res.status(201).send({ id: _id });
     } catch (error) {
-      console.log(error);
-      next(new BadRequestException());
+      // console.log(error.errors);
+      // CustomError.createError({
+      //   name: "ValidationError",
+      //   cause: error.errors,
+      //   message: JSON.stringify(
+      //     error.errors.map((e) => ({
+      //       property: e.path.join("."),
+      //       issue: e.message,
+      //     }))
+      //   ),
+      //   code: ErrorEnum.INVALID_TYPES_ERROR,
+      // }),
+      // next();
     }
   }
 

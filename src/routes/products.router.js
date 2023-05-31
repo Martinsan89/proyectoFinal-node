@@ -1,7 +1,10 @@
 import { Router } from "express";
 import productsController from "../controllers/products.controller.js";
 import { uploader } from "../utils/uploader.js";
-import { validateBody, validateParams } from "../middlewares/validators.js";
+import {
+  validateBody,
+  validateParams,
+} from "../middlewares/validator.middleware.js";
 import { ProductDto } from "../dtos/post/product.dto.js";
 import { Id } from "../dtos/post/id.param.dto.js";
 import { validator } from "../validator/validator.js";
@@ -20,8 +23,8 @@ route.get(
 route.post(
   "/",
   uploader.single("file"),
-  passportCall("current"),
-  authorization("admin"),
+  // passportCall("current"),
+  // authorization("admin"),
   validateBody(validator(ProductDto)),
   productsController.create.bind(productsController)
 );

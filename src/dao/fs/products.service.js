@@ -40,9 +40,9 @@ class ProductsService {
     return [];
   }
 
-  async findById(id) {
+  async findById(_id) {
     const productsList = await this.find();
-    const findProd = productsList.find((p) => p.id === id);
+    const findProd = productsList.find((p) => p._id === _id);
     return findProd;
   }
 

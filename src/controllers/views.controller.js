@@ -1,4 +1,7 @@
 import DaoFactory from "../dao/persistenceFactory.js";
+import config from "../../config.js";
+
+const { PERSISTENCE } = config;
 
 class ViewsController {
   #userService;
@@ -48,15 +51,15 @@ class ViewsController {
     await this.#productService
       .find(myAggregate, options)
       .then(function (products) {
-        const productsList = products.docs;
-        if (productsList.length === 0) {
+        const productsList = PERSISTENCE === "MONGO" ? products.docs : products;
+        if (productsList?.length === 0) {
           res.render("notFound", { title: "Producto no encontrado" });
           return;
         } else {
           return res.render(redirection, {
-            products: products.docs,
-            nombre: user.first_name,
-            apellido: user.last_name,
+            products: productsList,
+            nombre: user?.first_name,
+            apellido: user?.last_name,
             rol: user.role,
             pages: products.totalPages,
             page: products.page,
@@ -89,7 +92,6 @@ class ViewsController {
   async home(req, res) {
     const query = req.query;
     const id = req.user?.user?.id;
-    console.log("view.js", req.user);
     if (!id) {
       res.redirect("/login");
       return;
@@ -122,6 +124,7 @@ class ViewsController {
 
     const { _id, title, description, price, stock, category, thumbnail } =
       await this.#productService.findById(pId);
+
     if (!_id) {
       res.render("notFound", { title: "Producto no encontrado" });
     } else {
@@ -153,6 +156,7 @@ class ViewsController {
         };
 
         res.render("carts", { products, quantity, cId });
+        return;
       }
     } catch (error) {
       console.log(error);

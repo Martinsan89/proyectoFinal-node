@@ -18,7 +18,7 @@ export function localStrategy() {
       },
       async (req, username, password, done) => {
         try {
-          const { age, email, last_name, first_name, phone } = req.body;
+          const { age, email, last_name, first_name, phone, role } = req.body;
           const userExists = await usersController.findOne(email);
           if (userExists) {
             return done(null, false);
@@ -30,6 +30,7 @@ export function localStrategy() {
             last_name,
             phone,
             email: username,
+            role: role ?? "user",
             password: createHash(password),
           });
           return done(null, newUser);

@@ -22,6 +22,7 @@ class AuthController {
     try {
       const user = req.user;
       const { _id } = await this.#cartService.create();
+      // console.log("auth controller.js", req.body);
 
       const token = generateToken({
         id: user._id,

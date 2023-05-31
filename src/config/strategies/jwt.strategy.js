@@ -14,7 +14,7 @@ export function jwtStrategy() {
         secretOrKey: config.jwt_token,
       },
       (payload, done) => {
-        console.log("jwt.js", payload);
+        // console.log("jwt.js", payload);
         try {
           return done(null, payload);
         } catch (error) {

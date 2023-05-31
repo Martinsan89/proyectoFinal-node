@@ -4,7 +4,7 @@ import viewsRoute from "./routes/views.route.js";
 import configureHandlebars from "./lib/hbs.middleware.js";
 import configureSocket from "./socket/configure-socket.js";
 import fileDirName from "./utils/fileDirName.js";
-import { ValidationError } from "./classes/errors/validation-error.js";
+// import { ValidationError } from "./classes/errors/validation-error.js";
 import config from "../config.js";
 import cookieParser from "cookie-parser";
 import session from "express-session";
@@ -12,7 +12,9 @@ import MongoStore from "connect-mongo";
 import { configurePassport } from "./config/passport.config.js";
 import passport from "passport";
 import cors from "cors";
-import cookieSession from "cookie-session";
+import errorMiddleware from "./middlewares/error.middleware.js";
+import { generateUser } from "../mock.js";
+import customResponseMiddleware from "./middlewares/custom-response.middleware.js";
 
 const { PORT, mongo_url, cookie_secret, PERSISTENCE } = config;
 
@@ -43,9 +45,6 @@ PERSISTENCE === "MONGO"
     )
   : app.use(
       session({
-        name: "Session FileSystem",
-        httpOnly: true,
-        expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
         secret: cookie_secret,
         resave: true,
         saveUninitialized: true,
@@ -58,19 +57,16 @@ app.use(passport.session());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(__dirname + "/public"));
+app.use(customResponseMiddleware);
 
 app.use("/", viewsRoute);
 app.use("/api", routes);
-
-app.use((error, req, res, next) => {
-  if (error instanceof ValidationError) {
-    return res.status(error.statusCode).json({
-      error: error.message,
-    });
-  }
-  console.log(error);
-  res.status(500).json({ error });
+app.use("/mockingproducts", (req, res) => {
+  const products = Array.from({ length: 100 }, () => generateUser());
+  res.send({ status: "ok", payload: products });
 });
+
+app.use(errorMiddleware);
 
 const port = PORT;
 const httpServer = app.listen(port, () =>

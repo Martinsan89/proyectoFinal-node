@@ -57,7 +57,6 @@ class CartsController {
   async update(req, res, next) {
     const cartId = req.params.cId;
     const productsInCart = req.body;
-    const userId = req.user.user.id;
 
     try {
       if (!productsInCart.product) {
@@ -70,7 +69,7 @@ class CartsController {
         } else {
           cart.products.push(productsInCart);
           const newCart = cart.products;
-          // console.log("push", cart);
+          // console.log("push", productsInCart);
           const newCartRes = await this.#service.update(cartId, {
             products: newCart,
           });
@@ -190,6 +189,7 @@ class CartsController {
         amount: totalProd.reduce((acc, num) => acc + num),
         purchaser: userEmail,
       };
+      console.log("cartcontroller.js ticket", ticket);
       const { _id } = await this.#ticketService.create(ticket);
       const prodFailIDs = prodFail.map((e) => e.product._id);
 
@@ -209,6 +209,7 @@ class CartsController {
 
       res.send({ ProductsFail: prodFailIDs });
     }
+    return;
   }
 }
 

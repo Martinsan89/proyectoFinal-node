@@ -39,15 +39,14 @@ class UsersService {
 
   async findById(_id) {
     const productsList = await this.find();
-    const findProd = productsList.find((p) => p._id === _id._id);
+    const findProd = productsList.find((p) => p._id === _id);
     return findProd;
   }
 
   async findOne(email) {
     const productsList = await this.find();
-    console.log("user service.js", productsList);
     if (productsList) {
-      const findProd = productsList.find((p) => p._id === email);
+      const findProd = productsList.find((p) => p.email === email);
       return findProd;
     } else {
       return [];

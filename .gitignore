@@ -8,3 +8,5 @@ src/views/index.handlebars
 src/routes/jwt.router.js
 src/mail.js
 src/sms.js
+.env.fs
+.env.mongo
