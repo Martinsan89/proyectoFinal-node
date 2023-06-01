@@ -74,7 +74,7 @@ class ProductsController {
 
     try {
       const { _id } = await this.#service.create(product);
-      console.log(_id);
+      // console.log(_id);
       res.status(201).send({ id: _id });
     } catch (error) {
       // console.log(error.errors);
@@ -84,7 +84,7 @@ class ProductsController {
         message: JSON.stringify({
           test: 1,
         }),
-        code: ErrorEnum.INVALID_TYPES_ERROR,
+        code: ErrorEnum.INVALID_PRODUCT_ERROR,
       });
     }
   }

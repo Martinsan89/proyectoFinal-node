@@ -13,8 +13,8 @@ import { configurePassport } from "./config/passport.config.js";
 import passport from "passport";
 import cors from "cors";
 import { generateUser } from "../mock.js";
-import errorMiddleware from "./middlewares/error.middleware.js";
 import customResponseMiddleware from "./middlewares/custom-response.middleware.js";
+import errorMiddleware from "./middlewares/error.middleware.js";
 
 const { PORT, mongo_url, cookie_secret, PERSISTENCE } = config;
 
@@ -56,8 +56,8 @@ app.use(passport.session());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(__dirname + "/public"));
 app.use(customResponseMiddleware);
+app.use(express.static(__dirname + "/public"));
 
 app.use("/", viewsRoute);
 app.use("/api", routes);

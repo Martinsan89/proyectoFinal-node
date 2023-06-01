@@ -5,10 +5,11 @@ export default (req, res, next) => {
       payload: data,
     });
   };
-  res.userErrorResponse = (message) => {
+  res.userErrorResponse = (message, code) => {
     res.status(400).send({
       status: "error",
       error: message,
+      code: code,
     });
   };
   res.serverErrorResponse = (message) => {

@@ -5,7 +5,7 @@ export const ProductDto = z.object({
   description: z.string().min(3).max(255),
   code: z.string(),
   price: z.number().positive(),
-  status: z.string(),
+  status: z.boolean(),
   stock: z.number(),
   category: z.string(),
   thumbnail: z.string(),

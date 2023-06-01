@@ -1,8 +1,11 @@
-export default (error, res, req, next) => {
+export default (error, req, res, next) => {
   switch (Math.floor(error.code / 100)) {
     case 1: //Errores de entrada
       // console.log("case 1 ------", error);
-      res.userErrorResponse(JSON.parse(error.message));
+      res.userErrorResponse({
+        message: JSON.parse(error.message),
+        code: error.code,
+      });
       break;
     case 2: //Errores lógicos
       res.userErrorResponse({
