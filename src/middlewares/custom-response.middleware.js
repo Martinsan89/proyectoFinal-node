@@ -12,10 +12,11 @@ export default (req, res, next) => {
       code: code,
     });
   };
-  res.serverErrorResponse = (message) => {
+  res.serverErrorResponse = (message, code) => {
     res.status(500).send({
       status: "error",
       error: message,
+      code: code,
     });
   };
   next();

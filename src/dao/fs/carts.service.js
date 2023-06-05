@@ -34,7 +34,6 @@ class CartsService {
   async findById(_id) {
     const cartsList = await this.find();
     const findCart = cartsList.find((p) => p?._id === _id);
-    // console.log("findCart", findCart);
 
     if (findCart?.products.length >= 1) {
       const products = await fs.promises.readFile(this.#productsPath);
@@ -44,7 +43,6 @@ class CartsService {
         return prod;
       });
 
-      // console.log("cart service,js", prodCart);
       return { _id: findCart._id, products: [{ product: { ...prodCart } }] };
     }
     return findCart;
@@ -69,7 +67,6 @@ class CartsService {
     }
     const newCartsList = [...cartsList];
     const newCartListToString = JSON.stringify(newCartsList);
-    // console.log("cartsservice.js", pId.products);
     await fs.promises.writeFile(this.#path, newCartListToString);
     return cart;
   }

@@ -7,8 +7,6 @@ async function send(event) {
   const age = document.getElementById("form-edad").value;
   const password = document.getElementById("form-password").value;
 
-  console.log("register.js", phone);
-
   const body = {
     first_name,
     last_name,

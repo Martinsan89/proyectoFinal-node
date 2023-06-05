@@ -1,7 +1,6 @@
 export default (error, req, res, next) => {
   switch (Math.floor(error.code / 100)) {
     case 1: //Errores de entrada
-      // console.log("case 1 ------", error);
       res.userErrorResponse({
         message: JSON.parse(error.message),
         code: error.code,
@@ -14,9 +13,12 @@ export default (error, req, res, next) => {
       });
       break;
     case 3: //Errores irrecuperables
-      res.serverErrorResponse("UnhandledError");
+      res.serverErrorResponse(error.message);
       break;
     default:
-      res.serverErrorResponse("UnhandledError");
+      res.serverErrorResponse({
+        message: error.message,
+        code: error.code,
+      });
   }
 };

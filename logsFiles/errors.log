@@ -1,0 +1,9 @@
+{"level":"fatal","message":"Log test fatal","timestamp":"2023-06-05T00:57:43.890Z"}
+{"level":"fatal","message":"Log test fatal","timestamp":"2023-06-05T00:58:13.932Z"}
+{"level":"fatal","message":"Log test fatal","timestamp":"2023-06-05T01:09:15.095Z"}
+{"level":"fatal","message":"Log test fatal","timestamp":"2023-06-05T12:16:29.642Z"}
+{"level":"error","message":"Log Error Log test error","timestamp":"2023-06-05T12:17:19.492Z"}
+{"level":"fatal","message":"Log test fatal","timestamp":"2023-06-05T12:18:25.359Z"}
+{"level":"fatal","message":"Log test fatal","timestamp":"2023-06-05T12:18:51.477Z"}
+{"code":500,"level":"fatal","message":"Log test fatal","timestamp":"2023-06-05T12:22:41.562Z"}
+{"code":500,"level":"fatal","message":"Log test fatal","timestamp":"2023-06-05T12:24:41.865Z"}

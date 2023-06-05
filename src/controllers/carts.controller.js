@@ -39,7 +39,6 @@ class CartsController {
         res.status(200).send({ cart });
       }
     } catch (error) {
-      console.log(error);
       next(new NotFoundException());
     }
   }
@@ -49,7 +48,6 @@ class CartsController {
       const { _id } = await this.#service.create();
       res.status(201).send({ _id });
     } catch (error) {
-      console.log(error);
       next(new BadRequestException());
     }
   }
@@ -69,17 +67,13 @@ class CartsController {
         } else {
           cart.products.push(productsInCart);
           const newCart = cart.products;
-          // console.log("push", productsInCart);
           const newCartRes = await this.#service.update(cartId, {
             products: newCart,
           });
-          // console.log("newCart-------", newCartRes.products);
           res.status(200).send({ newCartRes });
         }
       }
     } catch (error) {
-      console.log(error);
-
       next(new BadRequestException());
     }
   }
@@ -181,7 +175,6 @@ class CartsController {
           e.product._id,
           { stock: newQty }
         );
-        // console.log("stock updated ---------", prodStockUpdated);
       });
       const ticket = {
         code: code,
@@ -189,14 +182,12 @@ class CartsController {
         amount: totalProd.reduce((acc, num) => acc + num),
         purchaser: userEmail,
       };
-      console.log("cartcontroller.js ticket", ticket);
       const { _id } = await this.#ticketService.create(ticket);
       const prodFailIDs = prodFail.map((e) => e.product._id);
 
       const updateCart = await this.#service.update(cartId, {
         products: prodFail,
       });
-      console.log("ticket ---------", _id);
 
       // actualizar el cart del usuario
       // const user = await this.#usersService.findById(userId);
@@ -205,7 +196,6 @@ class CartsController {
       // const addCartIdToUser = await this.#usersService.update(userId, {
       //   cart: newUserCart,
       // });
-      // console.log("user id--------", addCartIdToUser);
 
       res.send({ ProductsFail: prodFailIDs });
     }

@@ -2,6 +2,7 @@ import { Server } from "socket.io";
 
 import { productsManager } from "../dao/managers/products.manager.js";
 import { messagesManager } from "../dao/managers/messages.manager.js";
+import logger from "../logger/winstom-custom-logger.js";
 
 class SocketManager {
   #io;
@@ -13,7 +14,7 @@ class SocketManager {
 
   #configure() {
     this.#io.on("connection", (socket) => this.#confiogureSocket(socket));
-    console.log("socket conectado");
+    logger.info("socket conectado");
   }
 
   #confiogureSocket(socket) {

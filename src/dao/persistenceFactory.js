@@ -19,8 +19,7 @@ class DaoFactory {
         const { default: FsFactory } = await import("./fs/fsFactory.js");
         return FsFactory;
       default:
-        // throw new Error("Wrong persistence config");
-        console.log("default factory", config);
+        throw new Error("Wrong persistence config");
     }
   }
 }

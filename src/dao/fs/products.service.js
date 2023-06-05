@@ -63,7 +63,6 @@ class ProductsService {
     const productsList = await this.find();
     const findProd = productsList.find((p) => p._id === _id._id);
     const filterProductsList = productsList.filter((p) => p._id !== _id._id);
-    // console.log(filterProductsList);
     const filterProductsListToString = JSON.stringify(filterProductsList);
     await fs.promises.writeFile(this.#path, filterProductsListToString);
     return findProd ? findProd : "id no encontrado";

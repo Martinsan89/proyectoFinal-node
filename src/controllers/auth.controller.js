@@ -2,6 +2,7 @@ import { createHash } from "../utils/crypto.js";
 import jwt from "jsonwebtoken";
 import config from "../../config.js";
 import DaoFactory from "../dao/persistenceFactory.js";
+import logger from "../logger/winstom-custom-logger.js";
 
 const SECRET = config.jwt_token;
 
@@ -22,7 +23,6 @@ class AuthController {
     try {
       const user = req.user;
       const { _id } = await this.#cartService.create();
-      // console.log("auth controller.js", req.body);
 
       const token = generateToken({
         id: user._id,
@@ -37,7 +37,7 @@ class AuthController {
       });
       res.send({ user: req.user });
     } catch (error) {
-      console.log("authcontroller", error);
+      logger.info("authcontroller", error);
     }
   }
 

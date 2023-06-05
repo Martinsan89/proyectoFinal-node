@@ -159,7 +159,6 @@ class ViewsController {
         return;
       }
     } catch (error) {
-      console.log(error);
       res.render("notFound", { title: "Carrito no encontrado" });
     }
   }

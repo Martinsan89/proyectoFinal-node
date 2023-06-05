@@ -5,8 +5,6 @@ import ErrorEnum from "../errors/errors.enum.js";
 export const validator = (schema) => (maybeValid) => {
   const result = schema.safeParse(maybeValid);
   if (!result.success) {
-    console.log("validator.js", result.error);
-    // throw new ValidatorError(result.error.errors);
     CustomError.createError({
       name: "ValidationError",
       cause: result.error.errors,

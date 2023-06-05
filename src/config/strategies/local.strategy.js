@@ -51,11 +51,9 @@ export function localStrategy() {
         try {
           const user = await usersController.findOne(username);
           if (!user) {
-            // console.log("Usuario no existente en el login");
             return done(null, false, { message: "User or password incorrect" });
           }
           if (!isValidPassword(password, user.password)) {
-            // console.log("Contraseña incorrecta");
             return done(null, false, { message: "User or password incorrect" });
           }
 

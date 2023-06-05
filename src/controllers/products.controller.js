@@ -3,6 +3,9 @@ import { NotFoundException } from "../classes/errors/not-found-exception.js";
 import DaoFactory from "../dao/persistenceFactory.js";
 import config from "../../config.js";
 import CustomError from "../errors/custom.errors.js";
+import { ValidatorError } from "../validator/validator.error.js";
+import ErrorEnum from "../errors/errors.enum.js";
+import logger from "../logger/winstom-custom-logger.js";
 
 const { PERSISTENCE } = config;
 
@@ -55,7 +58,7 @@ class ProductsController {
         }
       })
       .catch(function (err) {
-        console.log(err);
+        logger.info(err);
       });
   }
 
@@ -71,21 +74,19 @@ class ProductsController {
 
   async create(req, res, next) {
     const product = req.body;
+    const errors = await ValidatorError.message;
 
     try {
       const { _id } = await this.#service.create(product);
-      // console.log(_id);
       res.status(201).send({ id: _id });
     } catch (error) {
-      // console.log(error.errors);
       CustomError.createError({
         name: "ValidationError",
         cause: "Prueba",
-        message: JSON.stringify({
-          test: 1,
-        }),
+        message: errors,
         code: ErrorEnum.INVALID_PRODUCT_ERROR,
       });
+      next();
     }
   }
 

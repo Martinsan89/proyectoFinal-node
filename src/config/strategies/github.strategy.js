@@ -16,7 +16,6 @@ export function githubStrategy() {
         try {
           const email = profile._json.email;
           const user = await userModel.findOne({ email });
-          // console.log("----passport---", user);
           if (!user) {
             const newUser = await userModel.create({
               email,
@@ -29,7 +28,6 @@ export function githubStrategy() {
           }
           return done(null, user);
         } catch (error) {
-          console.log(error);
           done(error, false);
         }
       }

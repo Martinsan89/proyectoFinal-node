@@ -15,6 +15,7 @@ import cors from "cors";
 import { generateUser } from "../mock.js";
 import customResponseMiddleware from "./middlewares/custom-response.middleware.js";
 import errorMiddleware from "./middlewares/error.middleware.js";
+import logger, { loggerMiddleware } from "./logger/winstom-custom-logger.js";
 
 const { PORT, mongo_url, cookie_secret, PERSISTENCE } = config;
 
@@ -56,6 +57,7 @@ app.use(passport.session());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(loggerMiddleware);
 app.use(customResponseMiddleware);
 app.use(express.static(__dirname + "/public"));
 
@@ -65,12 +67,20 @@ app.use("/mockingproducts", (req, res) => {
   const products = Array.from({ length: 100 }, () => generateUser());
   res.send({ status: "ok", payload: products });
 });
+app.use("/loggerTest", (req, res) => {
+  // req.logger.fatal({ message: "Log test fatal", code: 500 });
+  // req.logger.error("Log Error", { message: "Log test error" });
+  // req.logger.warning("Log test warning");
+  // req.logger.http("Log test http");
+  // req.logger.debug("Log test debug");
+  res.send({ ok: true });
+});
 
 app.use(errorMiddleware);
 
 const port = PORT;
 const httpServer = app.listen(port, () =>
-  console.log(`servidor conectado desde el port numero ${port}`)
+  logger.info(`servidor conectado desde el port numero ${port}`)
 );
 
 configureSocket(httpServer);
