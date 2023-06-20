@@ -7,5 +7,5 @@ export const UserDto = z.object({
   email: z.string().email(),
   age: z.number().int().positive(),
   cart: z.array(z.string().refine((id) => mongoose.Types.ObjectId.isValid(id))),
-  role: z.enum(["admin", "user"]),
+  role: z.enum(["admin", "user", "premium"]),
 });

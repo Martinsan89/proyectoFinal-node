@@ -55,6 +55,8 @@ class CartsController {
   async update(req, res, next) {
     const cartId = req.params.cId;
     const productsInCart = req.body;
+    const userRole = req.user.user.role;
+    const userEmail = req.user.user.email;
 
     try {
       if (!productsInCart.product) {
@@ -65,8 +67,16 @@ class CartsController {
         if (!cart) {
           next(new NotFoundException());
         } else {
-          cart.products.push(productsInCart);
-          const newCart = cart.products;
+          if (userRole === "premium") {
+            if (productsInCart.prodOwner === userEmail) {
+              res.status(400).send({ error: "Not authorized" });
+              return;
+            } else {
+              cart.products.push(productsInCart);
+            }
+          }
+
+          const newCart = cart?.products;
           const newCartRes = await this.#service.update(cartId, {
             products: newCart,
           });

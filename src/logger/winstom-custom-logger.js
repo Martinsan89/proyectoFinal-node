@@ -53,7 +53,7 @@ if (NODE_ENV === "production") {
 
 export const loggerMiddleware = (req, res, next) => {
   req.logger = logger;
-  req.logger.info(`${req.method} in ${req.url}`);
+  // req.logger.info(`${req.method} in ${req.url}`);
   next();
 };
 

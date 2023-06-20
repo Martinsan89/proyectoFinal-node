@@ -122,8 +122,16 @@ class ViewsController {
     const pId = req.params.pId;
     const cart = req.user.user.cart;
 
-    const { _id, title, description, price, stock, category, thumbnail } =
-      await this.#productService.findById(pId);
+    const {
+      _id,
+      title,
+      description,
+      price,
+      stock,
+      category,
+      thumbnail,
+      owner,
+    } = await this.#productService.findById(pId);
 
     if (!_id) {
       res.render("notFound", { title: "Producto no encontrado" });
@@ -136,6 +144,7 @@ class ViewsController {
         stock,
         category,
         thumbnail,
+        owner,
         cart,
       });
     }
@@ -192,7 +201,13 @@ class ViewsController {
   }
 
   async forgotPassword(req, res) {
-    res.render("forgot-password");
+    const user = req.user;
+    // console.log("viewcontroller.js", user);
+    if (!user) {
+      res.redirect("/login");
+      return;
+    }
+    res.render("forgotPassword");
   }
 
   async failureLogin(req, res) {

@@ -75,8 +75,13 @@ class ProductsController {
   async create(req, res, next) {
     const product = req.body;
     const errors = await ValidatorError.message;
+    const role = req.user.user.role;
+    const email = req.user.user.email;
 
     try {
+      if (email) {
+        product.owner = email;
+      }
       const { _id } = await this.#service.create(product);
       res.status(201).send({ id: _id });
     } catch (error) {
@@ -103,13 +108,33 @@ class ProductsController {
   }
 
   async delete(req, res, next) {
-    const idProduct = req.params.pid;
+    const idProduct = req.params.id;
+    const role = req.user.user.role;
+    const email = req.user.user.email;
+
     try {
-      await this.#service.delete({ _id: idProduct });
+      const product = await this.#service.findById(idProduct);
+      if (!product?.owner) {
+        res.send({ error: "not authorized" });
+        return;
+      }
+      if (role === "premium") {
+        if (product.owner === email) {
+          await this.#service.delete(idProduct);
+          res.send({ ok: true });
+          return;
+        }
+      }
+      if (role === "admin") {
+        await this.#service.delete(idProduct);
+        res.send({ ok: true });
+      }
+      res.send({ error: "not authorized" });
     } catch (error) {
-      next(new NotFoundException());
+      console.log(error);
+      // res.send({ false: "no no no" });
+      // next(new NotFoundException());
     }
-    res.status(200).send({ ok: true });
   }
 }
 

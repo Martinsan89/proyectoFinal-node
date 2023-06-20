@@ -27,8 +27,14 @@ route.get(
 route.get("/failureLogin", authController.failureLogin.bind(authController));
 
 route.post(
-  "/restore-password",
+  "/restorePassword",
   authController.restorePassword.bind(authController)
+);
+
+route.post(
+  "/setNewPassword",
+  passportCall("current"),
+  authController.setNewPassword.bind(authController)
 );
 
 route.get(

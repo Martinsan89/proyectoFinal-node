@@ -16,6 +16,7 @@ route.get("/", productsController.getAll.bind(productsController));
 
 route.get(
   "/:pid",
+  passportCall("current"),
   validateParams(validator(Id)),
   productsController.findById.bind(productsController)
 );
@@ -23,8 +24,8 @@ route.get(
 route.post(
   "/",
   uploader.single("file"),
-  // passportCall("current"),
-  // authorization("admin"),
+  passportCall("current"),
+  authorization(["admin", "premium"]),
   validateBody(validator(ProductDto)),
   productsController.create.bind(productsController)
 );
@@ -33,15 +34,15 @@ route.put(
   "/:pid",
   uploader.single("file"),
   passportCall("current"),
-  authorization("admin"),
+  authorization(["admin", "premium"]),
   validateParams(validator(Id)),
   productsController.update.bind(productsController)
 );
 
 route.delete(
-  "/:pid",
+  "/:id",
   passportCall("current"),
-  authorization("admin"),
+  authorization(["admin", "premium"]),
   validateParams(validator(Id)),
   productsController.delete.bind(productsController)
 );

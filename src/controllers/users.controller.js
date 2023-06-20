@@ -99,6 +99,25 @@ class UsersController {
     }
   }
 
+  async changeUserRole(req, res, next) {
+    const userId = req.params.uid;
+    const userRole = req.user.user.role;
+
+    try {
+      const usuario = await this.#service.findById(userId);
+      if (userRole === "premium") {
+        usuario.role = "user";
+      }
+      if (userRole === "user") {
+        usuario.role = "premium";
+      }
+      await this.#service.update({ _id: userId }, { ...usuario });
+      res.send({ ok: true });
+    } catch (error) {
+      next(error);
+    }
+  }
+
   #configureObservers() {
     this.#registerSubject.suscribe(new RegisterUserMailObserver());
     this.#registerSubject.suscribe(new RegisterUserSmsObserver());

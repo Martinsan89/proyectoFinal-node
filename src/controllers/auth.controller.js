@@ -1,8 +1,10 @@
-import { createHash } from "../utils/crypto.js";
+import { createHash, isValidPassword } from "../utils/crypto.js";
 import jwt from "jsonwebtoken";
 import config from "../../config.js";
 import DaoFactory from "../dao/persistenceFactory.js";
 import logger from "../logger/winstom-custom-logger.js";
+import { emailService } from "../external-services/email.service.js";
+import CustomError from "../errors/custom.errors.js";
 
 const SECRET = config.jwt_token;
 
@@ -12,11 +14,15 @@ function generateToken(user) {
 }
 
 class AuthController {
-  #service;
+  #productService;
   #cartService;
-  constructor(service, cartService) {
-    this.#service = service;
+  #emailService;
+  #usersService;
+  constructor(productService, cartService, usersService) {
+    this.#productService = productService;
     this.#cartService = cartService;
+    this.#emailService = emailService;
+    this.#usersService = usersService;
   }
 
   async login(req, res) {
@@ -37,7 +43,7 @@ class AuthController {
       });
       res.send({ user: req.user });
     } catch (error) {
-      logger.info("authcontroller", error);
+      // logger.info("authcontroller", error);
     }
   }
 
@@ -58,18 +64,53 @@ class AuthController {
     res.send({ error: "Usuario o contraseña incorrectos" });
   }
 
-  async restorePassword(req, res) {
-    const { email, newPassword } = req.body;
-    const user = await this.#service.findOne({ email });
-    if (!user) {
-      res.status(404).send({ error: "User not found" });
+  async restorePassword(req, res, next) {
+    const { email } = req.body;
+
+    try {
+      const user = await this.#usersService.findOne(email);
+      if (!user) {
+        res.status(404).send({ message: "usuario no encontrado" });
+        return;
+      }
+      await this.#emailService.sendEmail({
+        to: email,
+        subject: "Welcome to Shoes-Ecommerce",
+        html: `<h1>Reestablezca la contraseña</h1>
+          <button> <a href="http://localhost:8080/forgotPassword">Click para reestablecer la contrasena</a></button>`,
+      });
+      const token = generateToken({
+        id: user._id,
+        email: user.email,
+        password: user.password,
+      });
+      res.cookie("jwt", token, {
+        httpOnly: true,
+        maxAge: 3600000,
+      });
+      res.send({ ok: true });
+    } catch (error) {
+      console.log("err authcontr.js", error);
+    }
+  }
+
+  async setNewPassword(req, res, next) {
+    const newPassword = req.body.password;
+    const oldPassword = req.user.user.password;
+    const userId = req.user.user.id;
+
+    if (isValidPassword(newPassword, oldPassword)) {
+      res.status(400).send({ error: "Misma contraseña" });
       return;
     }
+
     const hashedPassword = createHash(newPassword);
-    await this.#service.updateOne(
-      { email },
-      { $set: { password: hashedPassword } }
+
+    await this.#usersService.update(
+      { _id: userId },
+      { password: hashedPassword }
     );
+    res.clearCookie("jwt");
     res.send({ message: "Password changed" });
   }
 
@@ -82,9 +123,11 @@ class AuthController {
 const DaoService = await DaoFactory.getDao();
 const productsService = await DaoService.getService("products");
 const cartsService = await DaoService.getService("carts");
+const usersService = await DaoService.getService("users");
 
 const controller = new AuthController(
   new productsService(),
-  new cartsService()
+  new cartsService(),
+  new usersService()
 );
 export default controller;

@@ -13,7 +13,7 @@ route.get("/:cId", cartsController.findById.bind(cartsController));
 route.put(
   "/:cId",
   passportCall("current"),
-  authorization("user"),
+  authorization(["user", "premium"]),
   cartsController.update.bind(cartsController)
 );
 

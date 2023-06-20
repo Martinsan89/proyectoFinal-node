@@ -17,8 +17,8 @@ export default (error, req, res, next) => {
       break;
     default:
       res.serverErrorResponse({
-        message: error.message,
-        code: error.code,
+        message: "Error  logico",
+        error: JSON.stringify(error.message),
       });
   }
 };

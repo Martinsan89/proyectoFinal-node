@@ -29,7 +29,7 @@ class ProductsService {
   }
 
   async delete(id) {
-    return this.#model.findByIdAndDelete(id);
+    return this.#model.findByIdAndDelete({ _id: id });
   }
 }
 

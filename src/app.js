@@ -4,7 +4,6 @@ import viewsRoute from "./routes/views.route.js";
 import configureHandlebars from "./lib/hbs.middleware.js";
 import configureSocket from "./socket/configure-socket.js";
 import fileDirName from "./utils/fileDirName.js";
-// import { ValidationError } from "./classes/errors/validation-error.js";
 import config from "../config.js";
 import cookieParser from "cookie-parser";
 import session from "express-session";
@@ -67,14 +66,14 @@ app.use("/mockingproducts", (req, res) => {
   const products = Array.from({ length: 100 }, () => generateUser());
   res.send({ status: "ok", payload: products });
 });
-app.use("/loggerTest", (req, res) => {
-  // req.logger.fatal({ message: "Log test fatal", code: 500 });
-  // req.logger.error("Log Error", { message: "Log test error" });
-  // req.logger.warning("Log test warning");
-  // req.logger.http("Log test http");
-  // req.logger.debug("Log test debug");
-  res.send({ ok: true });
-});
+// app.use("/loggerTest", (req, res) => {
+//   // req.logger.fatal({ message: "Log test fatal", code: 500 });
+//   // req.logger.error("Log Error", { message: "Log test error" });
+//   // req.logger.warning("Log test warning");
+//   // req.logger.http("Log test http");
+//   // req.logger.debug("Log test debug");
+//   res.send({ ok: true });
+// });
 
 app.use(errorMiddleware);
 

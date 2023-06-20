@@ -27,7 +27,7 @@ route.get("/products", viewsController.products.bind(viewsController));
 route.get(
   "/productDetail/:pId",
   passportCall("current"),
-  authorization("user"),
+  authorization(["user", "premium"]),
   viewsController.productDetail.bind(viewsController)
 );
 
@@ -48,7 +48,8 @@ route.get(
 );
 
 route.get(
-  "/forgot-password",
+  "/forgotPassword",
+  passportCall("current"),
   viewsController.forgotPassword.bind(viewsController)
 );
 
