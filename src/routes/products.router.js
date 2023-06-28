@@ -17,7 +17,7 @@ route.get("/", productsController.getAll.bind(productsController));
 route.get(
   "/:pid",
   passportCall("current"),
-  validateParams(validator(Id)),
+  // validateParams(validator(Id)),
   productsController.findById.bind(productsController)
 );
 

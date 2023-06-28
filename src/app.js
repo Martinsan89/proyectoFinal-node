@@ -15,6 +15,8 @@ import { generateUser } from "../mock.js";
 import customResponseMiddleware from "./middlewares/custom-response.middleware.js";
 import errorMiddleware from "./middlewares/error.middleware.js";
 import logger, { loggerMiddleware } from "./logger/winstom-custom-logger.js";
+import spec from "./docs/swagger-options.js";
+import swaggerUiExpress from "swagger-ui-express";
 
 const { PORT, mongo_url, cookie_secret, PERSISTENCE } = config;
 
@@ -23,6 +25,8 @@ const { __dirname } = fileDirName(import.meta);
 const app = express();
 
 configureHandlebars(app);
+
+app.use("/apidocs", swaggerUiExpress.serve, swaggerUiExpress.setup(spec));
 
 app.use(cookieParser());
 app.use(cors());

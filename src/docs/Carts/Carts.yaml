@@ -1,0 +1,279 @@
+paths:
+  /api/carts/:
+    get:
+      summary: Devuelve todos los carrito
+      tags:
+        - Carts
+      responses:
+        200:
+          description: Los carritos fueron obtenidos satisfactoriamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: El estado de la respuesta
+                    value: success
+                    example: success
+                  payload:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Cart"
+        500:
+          description: Error interno del servidor
+    post:
+      summary: Crea un nuevo carrito
+      tags:
+        - Carts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#components/requestBodies/createCart"
+      responses:
+        200:
+          description: El carrito se creo correctamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: El estado de la respuesta
+                    value: success
+                    example: success
+                  payload:
+                    _id:
+                      type: ObjectId
+        500:
+          description: Error interno del servidor
+  /api/carts/{cid}:
+    get:
+      summary: Obtiene el carrito por su id
+      tags:
+        - Carts
+      parameters:
+        - name: cid
+          in: path
+          description: El id del carrito
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: El carrito fue obtenido satisfactoriamente de la db.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: El estado de la respuesta
+                    value: success
+                    example: success
+                  payload:
+                    $ref: "#/components/schemas/Cart"
+        500:
+          description: Error interno del servidor.
+    put:
+      summary: Actualiza un carrito por su id
+      tags:
+        - Carts
+      parameters:
+        - name: uid
+          in: path
+          description: El id del carrito
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/requestBodies/updateCart"
+      responses:
+        200:
+          description: El carrito fue actualizado satisfactoriamente de la db.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: El estado de la respuesta
+                    value: success
+                    example: success
+                  payload:
+                    $ref: "#/components/schemas/Cart"
+        500:
+          description: Error interno del servidor.
+    delete:
+      summary: Elimina un producto por su id
+      tags:
+        - Carts
+      parameters:
+        - name: uid
+          in: path
+          description: El id del carrito
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: El carrito fue eliminado satisfactoriamente de la db.
+        500:
+          description: Error interno del servidor.
+  /{cid}/product/{pid}:
+    post:
+      summary: Actualiza la cantidad de un producto en el carrito
+      tags:
+        - Carts
+      parameters:
+        - name: cid
+          in: path
+          description: El id del carrito
+          required: true
+          schema:
+            type: string
+        - name: pid
+          in: path
+          description: El id del producto
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#components/requestBodies/updateProdInCart"
+      responses:
+        200:
+          description: El carrito se actualizo correctamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: El estado de la respuesta
+                    value: success
+                    example: success
+                  payload:
+                    _id:
+                      type: ObjectId
+        500:
+          description: Error interno del servidor
+    delete:
+      summary: Elimina un producto del carrito
+      tags:
+        - Carts
+      parameters:
+        - name: cid
+          in: path
+          description: El id del carrito
+          required: true
+          schema:
+            type: string
+        - name: pid
+          in: path
+          description: El id del producto
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: El carrito fue eliminado satisfactoriamente de la db.
+        500:
+          description: Error interno del servidor.
+components:
+  schemas:
+    Cart:
+      type: object
+      properties:
+        carts:
+          type: array
+          description: Productos en el carrito
+          example:
+            [
+              {
+                _id: 6427208bdce4752e18e7ac0c,
+                products:
+                  [
+                    {
+                      product: 6427208bdce4752e18e7ac0c,
+                      quantity: 2,
+                      _id: 6427208bdce4752e18e7ac0c,
+                    },
+                  ],
+              },
+            ]
+      example:
+        carts:
+          [
+            {
+              _id: 6427208bdce4752e18e7ac0c,
+              products:
+                [
+                  {
+                    product: 6427208bdce4752e18e7ac0c,
+                    quantity: 2,
+                    _id: 6427208bdce4752e18e7ac0c,
+                  },
+                ],
+            },
+          ]
+  requestBodies:
+    createCart:
+      type: object
+      required:
+        - cart
+      properties:
+        cart:
+          type: array
+          description: Crea un carrito
+          example: []
+      example:
+        cart: []
+    updateCart:
+      type: object
+      properties:
+        cart:
+          type: ObjectId
+          description: Id del producto
+          example:
+            products:
+              [
+                {
+                  product: "6427208bdce4752e18e7ac0c",
+                  quantity: 2,
+                  _id: "6427208bdce4752e18e7ac0c",
+                },
+              ]
+      example:
+        products:
+          [
+            {
+              product: "6427208bdce4752e18e7ac0c",
+              quantity: 2,
+              _id: "6427208bdce4752e18e7ac0c",
+            },
+          ]
+    updateProdInCart:
+      type: object
+      properties:
+        cart:
+          type: ObjectId
+          description: Id del producto
+          example:
+            quantity: 2
+      example:
+        quantity: 2

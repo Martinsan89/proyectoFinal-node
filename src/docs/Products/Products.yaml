@@ -1,0 +1,305 @@
+paths:
+  /api/products/:
+    get:
+      summary: Devuelve todos los productos
+      tags:
+        - Products
+      responses:
+        200:
+          description: Los productos fueron obtenidos satisfactoriamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: El estado de la respuesta
+                    value: success
+                    example: success
+                  payload:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Product"
+        500:
+          description: Error interno del servidor
+    post:
+      summary: Crea un nuevo producto
+      tags:
+        - Products
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#components/requestBodies/updateProduct"
+      responses:
+        200:
+          description: El producto se creo correctamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: El estado de la respuesta
+                    value: success
+                    example: success
+                  payload:
+                    _id:
+                      type: ObjectId
+        500:
+          description: Error interno del servidor
+  /api/products/{uid}:
+    get:
+      summary: Obtiene el producto por su id
+      tags:
+        - Products
+      parameters:
+        - name: uid
+          in: path
+          description: El id del producto
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: El producto fue obtenido satisfactoriamente de la db.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: El estado de la respuesta
+                    value: success
+                    example: success
+                  payload:
+                    $ref: "#/components/schemas/Product"
+        500:
+          description: Error interno del servidor.
+    put:
+      summary: Actualiza un producto por su id
+      tags:
+        - Products
+      parameters:
+        - name: uid
+          in: path
+          description: El id del producto
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/requestBodies/updateProduct"
+      responses:
+        200:
+          description: El usuarios fueron obtenidos satisfactoriamente de la db.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: El estado de la respuesta
+                    value: success
+                    example: success
+                  payload:
+                    $ref: "#/components/schemas/Product"
+        500:
+          description: Error interno del servidor.
+    delete:
+      summary: Elimina un producto por su id
+      tags:
+        - Products
+      parameters:
+        - name: uid
+          in: path
+          description: El id del producto
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: El usuarios fueron obtenidos satisfactoriamente de la db.
+        500:
+          description: Error interno del servidor.
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        _id:
+          type: ObjectId
+          description: Id del producto
+          example: 6427208bdce4752e18e7ac0c
+        title:
+          type: string
+          description: Nombre del producto
+          example: Adidas core-race
+        description:
+          type: string
+          description: Descripcion del producto
+          example: Zapatillas de running
+        code:
+          type: string
+          description: Codigo del producto
+          example: fgh567g
+        price:
+          type: number
+          description: Precio del producto
+          example: 220
+        status:
+          type: boolean
+          description: Estado del producto
+          example: false
+        stock:
+          type: number
+          description: Stock del producto
+          example: 20
+        category:
+          type: String
+          description: Categoria del producto
+          example: running
+        thumbnail:
+          type: String
+          description: Categoria del producto
+          example: shoes.jpg
+        owner:
+          type: String
+          description: Usuario creador del producto
+          example: test@test.com
+      example:
+        _id: 6427208bdce4752e18e7ac0c
+        title: Adidas core-race
+        description: Zapatillas de running
+        code: ads789
+        price: 220
+        status: false
+        stock: 20
+        category: running
+        thumbnail: shoes.jpg
+        owner: test@test.com
+  requestBodies:
+    createProduct:
+      type: object
+      required:
+        - title
+        - description
+        - code
+        - price
+        - status
+        - stock
+        - category
+      properties:
+        _id:
+          type: ObjectId
+          description: Id del producto
+          example: 6427208bdce4752e18e7ac0c
+        title:
+          type: string
+          description: Nombre del producto
+          example: Adidas core-race
+        description:
+          type: string
+          description: Descripcion del producto
+          example: Zapatillas de running
+        code:
+          type: string
+          description: Codigo del producto
+          example: fgh567g
+        price:
+          type: number
+          description: Precio del producto
+          example: 220
+        status:
+          type: boolean
+          description: Estado del producto
+          example: false
+        stock:
+          type: number
+          description: Stock del producto
+          example: 20
+        category:
+          type: String
+          description: Categoria del producto
+          example: running
+        thumbnail:
+          type: String
+          description: Categoria del producto
+          example: shoes.jpg
+        owner:
+          type: String
+          description: Usuario creador del producto
+          example: test@test.com
+      example:
+        _id: 6427208bdce4752e18e7ac0c
+        title: Adidas core-race
+        description: Zapatillas de running
+        code: ads789
+        price: 220
+        status: false
+        stock: 20
+        category: running
+        thumbnail: shoes.jpg
+        owner: test@test.com
+    updateProduct:
+      type: object
+      properties:
+        _id:
+          type: ObjectId
+          description: Id del producto
+          example: 6427208bdce4752e18e7ac0c
+        title:
+          type: string
+          description: Nombre del producto
+          example: Adidas core-race
+        description:
+          type: string
+          description: Descripcion del producto
+          example: Zapatillas de running
+        code:
+          type: string
+          description: Codigo del producto
+          example: fgh567g
+        price:
+          type: number
+          description: Precio del producto
+          example: 220
+        status:
+          type: boolean
+          description: Estado del producto
+          example: false
+        stock:
+          type: number
+          description: Stock del producto
+          example: 20
+        category:
+          type: String
+          description: Categoria del producto
+          example: running
+        thumbnail:
+          type: String
+          description: Categoria del producto
+          example: shoes.jpg
+        owner:
+          type: String
+          description: Usuario creador del producto
+          example: test@test.com
+      example:
+        _id: 6427208bdce4752e18e7ac0c
+        title: Adidas core-race
+        description: Zapatillas de running
+        code: ads789
+        price: 220
+        status: false
+        stock: 20
+        category: running
+        thumbnail: shoes.jpg
+        owner: test@test.com
