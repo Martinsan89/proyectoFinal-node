@@ -6,10 +6,10 @@ import { RegisterUserSmsObserver } from "../dao/observers/register-user.sms.obse
 
 class UsersController {
   #registerSubject = new Subject();
-  #service;
+  #usersService;
   #cartsService;
-  constructor(service, cartsService) {
-    this.#service = service;
+  constructor(usersService, cartsService) {
+    this.#usersService = usersService;
     this.#cartsService = cartsService;
     this.#configureObservers();
   }
@@ -17,7 +17,7 @@ class UsersController {
     const { skip, limit, ...query } = req.query;
 
     try {
-      const usuarios = await this.#service.find(query, {
+      const usuarios = await this.#usersService.find(query, {
         skip: Number(skip ?? 0),
         limit: Number(limit ?? 10),
       });
@@ -36,9 +36,9 @@ class UsersController {
 
   async findById(req, res, next) {
     try {
-      const idUsuario = req.params.idUsuario;
+      const idUsuario = req?.params.uid;
 
-      const usuario = await this.#service.findById({ _id: idUsuario });
+      const usuario = await this.#usersService.findById({ _id: idUsuario });
       if (!usuario) {
         res
           .status(404)
@@ -47,7 +47,8 @@ class UsersController {
       }
       res.send({ usuario });
     } catch (error) {
-      next(error);
+      console.log(error);
+      // next(error);
     }
   }
 
@@ -55,9 +56,10 @@ class UsersController {
     const usuario = req.body;
     const createCart = await this.#cartsService.create();
     const newUser = { ...usuario, password: createHash(usuario.password) };
+    console.log(usuario);
 
     try {
-      const { _id } = await this.#service.create(newUser);
+      const { _id } = await this.#usersService.create(newUser);
       this.#registerSubject.notify({ _id, ...newUser });
 
       res.status(201).send({ id: _id });
@@ -70,7 +72,7 @@ class UsersController {
     const idUsuario = req.params.idUsuario;
 
     try {
-      const usuario = await this.#service.find({ _id: idUsuario });
+      const usuario = await this.#usersService.find({ _id: idUsuario });
       if (!usuario) {
         res
           .status(404)
@@ -79,7 +81,7 @@ class UsersController {
       }
       const nuevosDatos = req.body;
 
-      await this.#service.update(
+      await this.#usersService.update(
         { _id: idUsuario },
         { ...usuario, ...nuevosDatos }
       );
@@ -92,27 +94,17 @@ class UsersController {
   async delete(req, res, next) {
     try {
       const idUsuario = req.params.idUsuario;
-      await this.#service.delete({ _id: idUsuario });
+      await this.#usersService.delete({ _id: idUsuario });
       res.send({ ok: true });
     } catch (error) {
       next(error);
     }
   }
 
-  async changeUserRole(req, res, next) {
-    const userId = req.params.uid;
-    const userRole = req.user.user.role;
-
+  async documents(req, res, next) {
     try {
-      const usuario = await this.#service.findById(userId);
-      if (userRole === "premium") {
-        usuario.role = "user";
-      }
-      if (userRole === "user") {
-        usuario.role = "premium";
-      }
-      await this.#service.update({ _id: userId }, { ...usuario });
-      res.send({ ok: true });
+      res.okResponse("Documento agregado");
+      // console.log(req.body);
     } catch (error) {
       next(error);
     }
@@ -125,11 +117,8 @@ class UsersController {
 }
 
 const DaoService = await DaoFactory.getDao();
-const productsService = await DaoService.getService("users");
+const usersService = await DaoService.getService("users");
 const cartsService = await DaoService.getService("carts");
 
-const controller = new UsersController(
-  new productsService(),
-  new cartsService()
-);
+const controller = new UsersController(new usersService(), new cartsService());
 export default controller;

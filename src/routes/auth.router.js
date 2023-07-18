@@ -11,7 +11,11 @@ route.post(
   authController.login.bind(authController)
 );
 
-route.post("/logout", authController.logout.bind(authController));
+route.post(
+  "/logout",
+  passportCall("current"),
+  authController.logout.bind(authController)
+);
 
 route.post(
   "/register",

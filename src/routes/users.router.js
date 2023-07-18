@@ -1,19 +1,34 @@
 import { Router } from "express";
 import usersController from "../controllers/users.controller.js";
-import { passportCall } from "../utils/middlewares/auth.js";
+import premiumRoute from "./premium.router.js";
+import {
+  documentsMulter,
+  profilesMulter,
+  uploader,
+  pathDir,
+} from "../utils/uploader.js";
+
 const route = Router();
 
 route.get("/", usersController.find.bind(usersController));
 
-route.get("/:idUsuario", usersController.findById.bind(usersController));
-
-route.post("/", usersController.create.bind(usersController));
+route.get("/:uid", usersController.findById.bind(usersController));
 
 route.post(
-  "/premium/:uid",
-  passportCall("current"),
-  usersController.changeUserRole.bind(usersController)
+  "/",
+  uploader(pathDir.profiles).array("files"),
+  profilesMulter,
+  usersController.create.bind(usersController)
 );
+
+route.post(
+  "/:uid/documents",
+  uploader(pathDir.documents).array("files"),
+  documentsMulter,
+  usersController.documents.bind(usersController)
+);
+
+route.use("/premium", premiumRoute);
 
 route.put("/:idUsuario", usersController.update.bind(usersController));
 

@@ -42,14 +42,31 @@ class AuthController {
         maxAge: 3600000,
       });
       res.send({ user: req.user });
+      // Update Last Connection
+      let lastConnection = {
+        last_connection: new Date().toLocaleString(),
+      };
+      const updateLastConnection = await this.#usersService.update(
+        user._id,
+        lastConnection
+      );
     } catch (error) {
-      // logger.info("authcontroller", error);
+      logger.info("authcontroller", error);
     }
   }
 
   async logout(req, res) {
     res.clearCookie("jwt");
-    res.redirect("/login");
+    res.okResponse("Logout success");
+    // Update Last Connection
+    const user = req.user;
+    let lastConnection = {
+      last_connection: new Date().toLocaleString(),
+    };
+    const updateLastConnection = await this.#usersService.update(
+      user._id,
+      lastConnection
+    );
   }
 
   async register(req, res) {
