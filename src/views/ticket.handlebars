@@ -1,0 +1,41 @@
+<div>
+    <div>
+        <button class="btn" onclick="logout()">LOGOUT</button>
+    </div>
+
+    <h1>COMPRA FINALIZADA CON EXITO !</h1>
+    <h2>TICKET # {{_id}}</h2>
+    <h4>CART # {{code}}</h4>
+    <h4>TOTAL $ {{amount}}</h4>
+</div>
+
+<script>
+    async function logout(){
+        const response = await fetch(`http://localhost:8080/api/auth/logout`, {
+        method: 'POST',
+        headers: {
+            "Content-Type": "application/json",
+        },
+        })
+        if(response.status === 200){
+            window.location.href = `http://localhost:8080/login`
+        }
+    }
+</script>
+
+<style>
+    * {
+background-color: black;
+color: white;
+padding: 8px;
+
+}
+
+.btn {
+    color: black;
+    text-decoration: none;
+    background-color: white;
+    padding: 8px;
+    border-radius: 8px;
+}
+</style>

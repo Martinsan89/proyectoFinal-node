@@ -10,8 +10,12 @@ class UsersService {
     return this.#model.create(data);
   }
 
-  async find(query, { skip, limit }) {
-    return this.#model.paginate(query, { skip, limit });
+  async find(myAggregate, options) {
+    return this.#model.aggregatePaginate(myAggregate, options);
+  }
+
+  async aggregate(aggregateSearch) {
+    return this.#model.aggregate(aggregateSearch);
   }
 
   async findById(id) {
@@ -23,9 +27,7 @@ class UsersService {
   }
 
   async update(id, data) {
-    await this.#model.updateOne({ _id: id }, { $set: data });
-    const updateData = await this.#model.findOne(id);
-    return updateData;
+    return this.#model.updateOne({ _id: id }, { $set: data });
   }
 
   async delete(id) {

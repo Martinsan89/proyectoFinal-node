@@ -8,21 +8,20 @@
                 <h1>{{title}}</h1>
                 <p>{{description}}</p>
                 <img style="height: 7rem" src={{thumbnail}} alt={{code}}>
-                <p>Id= {{_id}}</p>
-                <p>Category= {{category}}</p>
+                <p>ID {{_id}}</p>
+                <p>CATEGORIA {{category}}</p>
                 <p>$ {{price}}</p>
-                <p>Stock= {{stock}}</p>
+                <p>STOCK {{stock}}</p>
             </div>
         </div>
 
     </div>
     <div class="form">
-        <label>Quantity</label>
-        <input  style="text-align: center;" type="number" id="quantity">
-        <button class="toCart" data-cart={{cart}} value={{ _id}} data-owner={{owner}} onclick="addToCart(value)">Agregar al carrito</button>
-        
-    </div>
+        <label>CANTIDAD</label>
+        <input  style="text-align: center;" type="number" id="quantity" min="0" max={{stock}}>
+        <button class="toCart" data-cart={{cart}} value={{ _id}} data-owner={{owner}} onclick="addToCart(value)">AGREGAR AL CARRITO</button>
     <div id="confirmMsg"></div>
+    </div>
 </div>
 
 {{!-- No pude hacerlo funcionar de esta manera me dice que addToCart no esta definido  --}}
@@ -39,29 +38,37 @@
 
         const quantity = input.value;
 
+        const body = {
+            product,
+            quantity,
+            prodOwner
+        }
+        if(+quantity === 0) {
+            mensaje.innerHTML = '<p>PRODUCTO SIN STOCK</p>'
+            return
+        }
+
         const response = await fetch(`http://localhost:8080/api/carts/${cartId}`, {
         method: 'PUT',
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify({ 
-            product, 
-            quantity,
-            prodOwner})
+        body: JSON.stringify(body)
         })
-        
+
         if(response.status !== 400){
             window.location.href = `http://localhost:8080/carts/${cartId}`
         }else {
-            mensaje.innerHTML = '<p>Error al agregar el producto al carrito</p>'
+            mensaje.innerHTML = '<p>ERROR AL AGREGAR EL PRODUCTO</p>'
         }
     }
 </script>
 
 <style>
-    * {
+* {
     background-color: black;
     color: white;
+    padding: 8px;
 }
 
 .btn {

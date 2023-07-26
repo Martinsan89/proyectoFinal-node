@@ -1,6 +1,5 @@
 import { Router } from "express";
 import productsController from "../controllers/products.controller.js";
-// import { uploader } from "../utils/uploader.js";
 import {
   validateBody,
   validateParams,

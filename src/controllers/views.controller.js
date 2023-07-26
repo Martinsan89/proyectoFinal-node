@@ -1,5 +1,6 @@
 import DaoFactory from "../dao/persistenceFactory.js";
 import config from "../../config.js";
+import TicketsService from "../dao/services/tickets.service.js";
 
 const { PERSISTENCE } = config;
 
@@ -7,11 +8,13 @@ class ViewsController {
   #userService;
   #cartService;
   #productService;
+  #ticketService;
 
   constructor(userService, cartService, productService) {
     this.#userService = userService;
     this.#cartService = cartService;
     this.#productService = productService;
+    this.#ticketService = new TicketsService();
   }
 
   async getCart(id) {
@@ -60,7 +63,8 @@ class ViewsController {
             products: productsList,
             nombre: user?.first_name,
             apellido: user?.last_name,
-            rol: user.role,
+            rol: user?.role,
+            cartId: user?.cart._id,
             pages: products.totalPages,
             page: products.page,
             prev: products.prevPage,
@@ -92,10 +96,6 @@ class ViewsController {
   async home(req, res) {
     const query = req.query;
     const id = req.user?.user?.id;
-    if (!id) {
-      res.redirect("/login");
-      return;
-    }
     const user = await this.#userService.findById(id);
     const redirection = "home";
     await this.getProducts(query, redirection, res, user);
@@ -159,12 +159,12 @@ class ViewsController {
       if (!cart) {
         res.render("notFound", { title: "Carrito no encontrado" });
       } else {
-        const products = cart.products.map((e) => e.product);
-        const quantity = {
-          qty: parseInt(cart.products.map((e) => e.quantity)),
-        };
+        const products = cart.products.map((e) => ({
+          product: e.product,
+          quantity: e.quantity,
+        }));
 
-        res.render("carts", { products, quantity, cId });
+        res.render("carts", { products, cId });
         return;
       }
     } catch (error) {
@@ -202,7 +202,6 @@ class ViewsController {
 
   async forgotPassword(req, res) {
     const user = req.user;
-    // console.log("viewcontroller.js", user);
     if (!user) {
       res.redirect("/login");
       return;
@@ -212,6 +211,57 @@ class ViewsController {
 
   async failureLogin(req, res) {
     res.render("failureLogin");
+  }
+
+  async notFound(req, res) {
+    res.render("notFound");
+  }
+
+  async getUsers(query, res) {
+    const options = {
+      page: query.page ?? 1,
+      limit: query.limit ?? 10,
+      lean: true,
+    };
+
+    const myAggregate = query
+      ? this.#userService.aggregate([
+          {
+            $sort: {
+              role: query.sort ? (query.sort === "asc" ? 1 : -1) : 1,
+            },
+          },
+        ])
+      : this.#userService.aggregate();
+
+    await this.#userService
+      .find(myAggregate, options)
+      .then(function (users) {
+        const usersList = users.docs;
+        if (usersList?.length === 0) {
+          res.render("notFound", { title: "Usuarios no encontrado" });
+          return;
+        } else {
+          return res.render("editUsers", {
+            users: usersList,
+          });
+        }
+      })
+      .catch(function (err) {
+        throw err;
+      });
+  }
+
+  async editUsers(req, res) {
+    const query = req.query;
+
+    await this.getUsers(query, res);
+  }
+
+  async ticket(req, res) {
+    const idT = req.params.idT;
+    const { _id, amount, code } = await this.#ticketService.findById(idT);
+    res.render("ticket", { _id, amount, code });
   }
 }
 

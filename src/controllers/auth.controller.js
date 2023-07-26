@@ -4,7 +4,6 @@ import config from "../../config.js";
 import DaoFactory from "../dao/persistenceFactory.js";
 import logger from "../logger/winstom-custom-logger.js";
 import { emailService } from "../external-services/email.service.js";
-import CustomError from "../errors/custom.errors.js";
 
 const SECRET = config.jwt_token;
 
@@ -14,22 +13,19 @@ function generateToken(user) {
 }
 
 class AuthController {
-  #productService;
   #cartService;
   #emailService;
   #usersService;
-  constructor(productService, cartService, usersService) {
-    this.#productService = productService;
+  constructor(cartService, usersService) {
     this.#cartService = cartService;
     this.#emailService = emailService;
     this.#usersService = usersService;
   }
 
   async login(req, res) {
+    const user = req.user;
     try {
-      const user = req.user;
       const { _id } = await this.#cartService.create();
-
       const token = generateToken({
         id: user._id,
         email: user.email,
@@ -43,8 +39,10 @@ class AuthController {
       });
       res.send({ user: req.user });
       // Update Last Connection
+      const date = new Date();
+      const dateInMs = date.getMilliseconds();
       let lastConnection = {
-        last_connection: new Date().toLocaleString(),
+        last_connection: dateInMs,
       };
       const updateLastConnection = await this.#usersService.update(
         user._id,
@@ -107,7 +105,7 @@ class AuthController {
       });
       res.send({ ok: true });
     } catch (error) {
-      console.log("err authcontr.js", error);
+      next(error);
     }
   }
 
@@ -138,13 +136,8 @@ class AuthController {
 }
 
 const DaoService = await DaoFactory.getDao();
-const productsService = await DaoService.getService("products");
 const cartsService = await DaoService.getService("carts");
 const usersService = await DaoService.getService("users");
 
-const controller = new AuthController(
-  new productsService(),
-  new cartsService(),
-  new usersService()
-);
+const controller = new AuthController(new cartsService(), new usersService());
 export default controller;

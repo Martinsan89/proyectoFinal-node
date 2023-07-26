@@ -1,0 +1,72 @@
+<div>
+    <h1>Editar usuarios</h1>
+    <div>
+        <h5>test</h5>
+        <div class="productContainer">
+            {{#each users}}
+            <div class="product">
+                <div class="prodContent">
+                    <h3 class="prodItem">{{this._id}}</h3>
+                    <h3 class="prodItem">{{this.role}}</h3>
+                    <label>Edit role</label>
+                    <input
+                        id='form-role'
+                        type='text'
+                        name='form-role'
+                        placeholder='Change Role'
+                        onchange="newRoleEdit(event)" 
+                    />
+                    <button value={{this._id}} id="changeRole" onclick="editUser(value)">Change </button>
+                </div>
+            <div>
+                <button value={{this._id}} id="changeRole" onclick="deleteUser(value)">ELIMINIAR</button>
+                <div id="confirmDelete"></div>
+            </div>
+            </div>
+            {{/each}}
+        </div>
+    </div>
+    <div id="confirmMsg"></div>
+
+</div>
+
+<script>
+    const mensaje = document.querySelector("#confirmMsg");
+    const mensajeDelete = document.querySelector("#confirmDelete");
+
+    let newRole;
+
+    function newRoleEdit(evt) {
+        evt.preventDefault()
+        newRole = evt.target.value
+    }
+
+    async function editUser(id) {
+        const body = {
+            role: newRole
+        }
+
+        const response = await fetch(`http://localhost:8080/api/users/${id}`, {
+            method: "PUT",
+            body: JSON.stringify(body),
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+        response
+        .json()
+         .then((d) => window.location.href = 'http://localhost:8080/editUsers')
+        .catch((err) => mensaje.innerHTML = `<p>${err}</p>`)
+    }
+
+    async function deleteUser(id) {
+        const response = await fetch(`http://localhost:8080/api/users/${id}`, {
+            method: "delete",
+        });
+        response
+        .json()
+         .then((d) => window.location.href = 'http://localhost:8080/editUsers')
+        .catch((err) => mensajeDelete.innerHTML = `<p>${err}</p>`)
+    }
+
+</script>

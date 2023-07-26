@@ -14,7 +14,6 @@ export const validateQuery = (validator) => (req, res, next) => {
     req.query = validatedQuery;
     next();
   } catch (error) {
-    // res.userErrorResponse(error.message);
     throw error.messsage;
   }
 };

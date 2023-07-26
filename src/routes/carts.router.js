@@ -17,10 +17,10 @@ route.put(
   cartsController.update.bind(cartsController)
 );
 
-route.post(
+route.patch(
   "/:cId/product/:pId",
   passportCall("current"),
-  authorization("user"),
+  authorization(["user", "premium"]),
   cartsController.updateProdInCart.bind(cartsController)
 );
 
@@ -34,7 +34,7 @@ route.delete(
 route.post(
   "/:cId/purchase",
   passportCall("current"),
-  authorization("user"),
+  authorization(["user", "premium"]),
   cartsController.purchase.bind(cartsController)
 );
 

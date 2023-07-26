@@ -1,6 +1,5 @@
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
-// import { userModel } from "../../dao/models/user.model.js";
 import { createHash, isValidPassword } from "../../utils/crypto.js";
 import DaoFactory from "../../dao/persistenceFactory.js";
 
@@ -48,8 +47,8 @@ export function localStrategy() {
         usernameField: "email",
       },
       async (username, password, done) => {
+        const user = await usersController.findOne(username);
         try {
-          const user = await usersController.findOne(username);
           if (!user) {
             return done(null, false, { message: "User or password incorrect" });
           }

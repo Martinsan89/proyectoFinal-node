@@ -2,17 +2,82 @@ import { createHash } from "../utils/crypto.js";
 import DaoFactory from "../dao/persistenceFactory.js";
 import Subject from "../utils/subject.js";
 import { RegisterUserMailObserver } from "../dao/observers/register-user.mail.observer.js";
-import { RegisterUserSmsObserver } from "../dao/observers/register-user.sms.observer.js";
+import { emailService } from "../external-services/email.service.js";
+import UserDto from "../dtos/get/user.dto.js";
+import config from "../../config.js";
 
 class UsersController {
   #registerSubject = new Subject();
   #usersService;
-  #cartsService;
+  #emailService;
   constructor(usersService, cartsService) {
     this.#usersService = usersService;
-    this.#cartsService = cartsService;
+    this.#emailService = emailService;
     this.#configureObservers();
   }
+
+  async get(req, res, next) {
+    try {
+      const { skip, limit, ...query } = req.query;
+      const usuarios = await this.#usersService.find(query, {
+        skip: Number(skip ?? 0),
+        limit: Number(limit ?? 10),
+      });
+
+      const userWithDto = await new UserDto(usuarios.docs).all();
+
+      res.okResponse("Todos los usuarios", userWithDto);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async delete(req, res, next) {
+    const usersLastConnection = [];
+    try {
+      const { skip, limit, ...query } = req.query;
+      // Get all users
+      const usuarios = await this.#usersService.find(query, {
+        skip: Number(skip ?? 0),
+        limit: Number(limit ?? 10),
+      });
+      // Define array users _id with last_connection in minutes
+      usersLastConnection.push(
+        usuarios.docs.map((e) => {
+          return {
+            id: e._id,
+            email: e.email,
+            last_connection: e.last_connection,
+          };
+        })
+      );
+      // Filter users by last_connection / get deprecated_users
+      const { DEPRECATED_USERS } = config;
+
+      const userToDelete = usersLastConnection[0].filter(
+        (e) => +e.last_connection > +DEPRECATED_USERS
+      );
+
+      // Delete users
+      userToDelete.map(async (e) => await this.#usersService.delete(e.id));
+
+      // Send email
+      userToDelete.map(
+        async (e) =>
+          await this.#emailService.sendEmail({
+            to: e.email,
+            subject: "Your account has beend deleted",
+            html: `<h1>Su cuenta ha sido borrada</h1>
+            <button> <a href="http://localhost:8080/register">Click para reestablecer la contrasena</a></button>`,
+          })
+      );
+
+      res.okResponse("Usuarios eliminados");
+    } catch (error) {
+      next(error);
+    }
+  }
+
   async find(req, res, next) {
     const { skip, limit, ...query } = req.query;
 
@@ -22,8 +87,10 @@ class UsersController {
         limit: Number(limit ?? 10),
       });
 
+      const userWithDto = await new UserDto(usuarios.docs).all();
+
       res.send({
-        usuarios: usuarios.docs,
+        usuarios: userWithDto,
         total: usuarios.totalDocs,
         totalPages: usuarios.totalPages,
         hasNextPage: usuarios.hasNextPage,
@@ -45,18 +112,17 @@ class UsersController {
           .send({ error: `Usuario con id ${idUsuario} no encontrado` });
         return;
       }
-      res.send({ usuario });
+      const userWithDto = await new UserDto(usuario).one();
+      res.send({ user: userWithDto });
     } catch (error) {
-      console.log(error);
-      // next(error);
+      next(error);
     }
   }
 
   async create(req, res, next) {
     const usuario = req.body;
-    const createCart = await this.#cartsService.create();
+    // const createCart = await this.#cartsService.create();
     const newUser = { ...usuario, password: createHash(usuario.password) };
-    console.log(usuario);
 
     try {
       const { _id } = await this.#usersService.create(newUser);
@@ -91,7 +157,7 @@ class UsersController {
     }
   }
 
-  async delete(req, res, next) {
+  async deleteOne(req, res, next) {
     try {
       const idUsuario = req.params.idUsuario;
       await this.#usersService.delete({ _id: idUsuario });
@@ -104,7 +170,6 @@ class UsersController {
   async documents(req, res, next) {
     try {
       res.okResponse("Documento agregado");
-      // console.log(req.body);
     } catch (error) {
       next(error);
     }
@@ -112,13 +177,12 @@ class UsersController {
 
   #configureObservers() {
     this.#registerSubject.suscribe(new RegisterUserMailObserver());
-    this.#registerSubject.suscribe(new RegisterUserSmsObserver());
+    // this.#registerSubject.suscribe(new RegisterUserSmsObserver());
   }
 }
 
 const DaoService = await DaoFactory.getDao();
 const usersService = await DaoService.getService("users");
-const cartsService = await DaoService.getService("carts");
 
-const controller = new UsersController(new usersService(), new cartsService());
+const controller = new UsersController(new usersService());
 export default controller;

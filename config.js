@@ -36,4 +36,5 @@ export default {
       pass: env.MAIL_PASS,
     },
   },
+  DEPRECATED_USERS: env.DEPRECATED_USERS,
 };

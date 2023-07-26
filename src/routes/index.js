@@ -4,7 +4,6 @@ import cartsRouter from "./carts.router.js";
 import sessionRouter from "./session.router.js";
 import usersRouter from "./users.router.js";
 import authRouter from "./auth.router.js";
-import jwtRouter from "./jwt.router.js";
 
 const route = Router();
 

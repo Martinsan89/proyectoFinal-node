@@ -7,7 +7,6 @@ export default (req, res, next) => {
   };
   res.userErrorResponse = (message, code) => {
     res.status(400).send({
-      status: "error",
       error: message,
       code: code,
     });

@@ -1,10 +1,10 @@
-<div>
-  <div>
-    <a class="btnLogin" href="http://localhost:8080/register">to Register</a>
+<div class="container">
+  <div class="btnContainer">
+    <a class="btnLogin" href="http://localhost:8080/register">REGISTER</a>
   </div>
   <div class="header">
     <h1>
-      Login
+      LOGIN
     </h1>
   </div>
   <div class="header">
@@ -13,29 +13,36 @@
         id='form-email'
         type='text'
         name='form-email'
-        placeholder='email'
+        placeholder='EMAIL'
       />
       <input
         id='form-password'
         type='password'
         name='form-password'
-        placeholder='password'
+        placeholder='PASSWORD'
       />
-      <input class="btn" type='submit' value='Login' />
+      <input class="btn" type='submit' value='LOGIN' />
     </form>
+    <div id="confirmLogin"></div>
+
   </div>
   <div class="btnDiv">
-    <button class="btnLogin" onclick="recoverPass(event)">Olvide la contraseña</button>
+    <button class="btnLogin" onclick="recoverPass(event)">RECUPERAR CONTRASEÑA</button>
     <div id="confirmRestorePassword"></div>
   </div>
   <div class="btnDiv">
-    <a class="btnLogin" href="/api/auth/github">Continuar con Github</a>
+    <a class="btnLogin" href="/api/auth/github">INICIAR SESION CON GITHUB</a>
 
   </div>
 </div>
 <script src='js/login.js'></script>
 
 <style>
+  .container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
   .header {
     width: 95%;
     margin: auto;
@@ -69,12 +76,13 @@
 }
 
 .btnLogin{
-  width: 40%;
-  text-decoration: none;
   color: black;
     text-decoration: none;
     background-color: white;
     padding: 8px;
     border-radius: 8px;
+}
+.btnContainer{
+  margin: 20px 0px;
 }
 </style>

@@ -38,7 +38,6 @@ export const documentsMulter = async (req, res, next) => {
     name: "Identification",
     reference: req.files.filename,
   };
-  console.log("documentsMulter", req.files);
   const updatedUser = await usersController.update(user._id, user);
   next();
 };
@@ -48,7 +47,6 @@ export const profilesMulter = async (req, res, next) => {
     res.userErrorResponse("Document not loaded", { code: "102" });
     return;
   }
-  // console.log(req.files);
   // const userId = req.params?.uid;
   // const user = await usersController.findById(userId);
   // user.documents = {
@@ -67,7 +65,6 @@ export const productsMulter = async (req, res, next) => {
   const products = await productsController.findById(userId);
   products.thumbnail = req.files.path;
   const updatedUser = await productsController.update(products._id, products);
-  console.log(updatedUser);
   next();
 };
 

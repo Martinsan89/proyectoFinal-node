@@ -1,6 +1,7 @@
 * {
     background-color: black;
     color: white;
+    padding: 8px;
 }
 
 .header {
@@ -19,6 +20,11 @@
     text-decoration: none;
     font-size: 1.5rem;
     gap: 2rem;
+}
+
+.navLink:hover {
+    background-color: aliceblue;
+    color: black;
 }
 
 .homeContainer {
@@ -49,13 +55,20 @@
     background-color: white;
     padding: 8px;
     border-radius: 8px;
+    cursor: pointer;
+}
+
+.btn:hover {
+    background-color: black;
+    color: white;
 }
 
 .productContainer{
     display: flex;
     flex-wrap: wrap;
-    gap: 1rem;
+    gap: 1.7rem;
     margin-top: 2rem;
+    align-items: center;
 }
 
 .product {
@@ -91,6 +104,24 @@
     background: none;
     border: none;
     cursor: pointer;
+}
+
+.prodBtn:hover {
+    background-color: aliceblue;
+    color: black;
+}
+
+.logoutBtn {
+    padding: 1rem;
+    width: 15%;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.logoutBtn:hover {
+    background-color: aliceblue;
+    color: black;
 }
 
 

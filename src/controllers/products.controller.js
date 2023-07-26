@@ -1,4 +1,3 @@
-import { BadRequestException } from "../classes/errors/bad-request-exception.js";
 import { NotFoundException } from "../classes/errors/not-found-exception.js";
 import DaoFactory from "../dao/persistenceFactory.js";
 import config from "../../config.js";
@@ -6,13 +5,19 @@ import CustomError from "../errors/custom.errors.js";
 import { ValidatorError } from "../validator/validator.error.js";
 import ErrorEnum from "../errors/errors.enum.js";
 import logger from "../logger/winstom-custom-logger.js";
+import { emailService } from "../external-services/email.service.js";
 
 const { PERSISTENCE } = config;
 
 class ProductsController {
   #service;
-  constructor(service) {
+  #emailService;
+  #usersService;
+
+  constructor(service, usersService) {
     this.#service = service;
+    this.#emailService = emailService;
+    this.#usersService = usersService;
   }
   async getAll(req, res, next) {
     const query = req.query;
@@ -74,8 +79,6 @@ class ProductsController {
 
   async create(req, res, next) {
     const product = req.body;
-    const errors = await ValidatorError.message;
-    const role = req.user.user.role;
     const email = req.user.user.email;
 
     try {
@@ -88,7 +91,7 @@ class ProductsController {
       CustomError.createError({
         name: "ValidationError",
         cause: "Prueba",
-        message: errors,
+        message: error,
         code: ErrorEnum.INVALID_PRODUCT_ERROR,
       });
       next();
@@ -109,38 +112,37 @@ class ProductsController {
 
   async delete(req, res, next) {
     const idProduct = req.params.id;
-    const role = req.user.user.role;
-    const email = req.user.user.email;
 
     try {
       const product = await this.#service.findById(idProduct);
-      if (!product?.owner) {
-        res.send({ error: "not authorized" });
-        return;
-      }
+      const user = await this.#usersService.findOne(product.owner);
+      const role = user?.role;
+
       if (role === "premium") {
-        if (product.owner === email) {
-          await this.#service.delete(idProduct);
-          res.send({ ok: true });
-          return;
-        }
-      }
-      if (role === "admin") {
         await this.#service.delete(idProduct);
-        res.send({ ok: true });
+        await this.#emailService.sendEmail({
+          to: product.owner,
+          subject: "Your product has beend deleted",
+          html: `<h1>Su producto ha sido borrada</h1>`,
+        });
+        return res.okResponse("Email sended");
       }
-      res.send({ error: "not authorized" });
+
+      await this.#service.delete(idProduct);
+      return res.okResponse("Product deleted");
     } catch (error) {
-      console.log(error);
-      // res.send({ false: "no no no" });
-      // next(new NotFoundException());
+      next(new NotFoundException());
     }
   }
 }
 
 const DaoService = await DaoFactory.getDao();
 const productsService = await DaoService.getService("products");
+const usersService = await DaoService.getService("users");
 
-const controller = new ProductsController(new productsService());
+const controller = new ProductsController(
+  new productsService(),
+  new usersService()
+);
 
 export default controller;

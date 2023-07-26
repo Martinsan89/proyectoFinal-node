@@ -11,3 +11,5 @@ src/sms.js
 .env.fs
 .env.mongo
 src/logger/winston-logger.js
+src/classes/server
+mock.js

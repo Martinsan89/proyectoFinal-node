@@ -33,15 +33,6 @@ export class MongoManager {
     }
   }
 
-  // async replace(id, entity) {
-  //   try {
-  //     const newEntity = await this.model.updateOne(id, entity);
-  //     return newEntity;
-  //   } catch (error) {
-  //     throw error;
-  //   }
-  // }
-
   async update(id, entity) {
     try {
       const newEntity = await this.model.updateOne(id, entity, {

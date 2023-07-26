@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import mongoosePaginate from "mongoose-paginate-v2";
-import { cartCollections } from "./carts.models.js";
+import aggregatePaginate from "mongoose-aggregate-paginate-v2";
 
 export const userCollection = "usuarios";
 
@@ -15,7 +15,6 @@ const userSchema = new mongoose.Schema({
     type: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: cartCollections,
         default: null,
       },
     ],
@@ -37,6 +36,7 @@ const userSchema = new mongoose.Schema({
   last_connection: { type: String },
 });
 userSchema.plugin(mongoosePaginate);
+userSchema.plugin(aggregatePaginate);
 
 userSchema.pre("findOne", function () {
   this.populate("cart.id");

@@ -18,7 +18,7 @@ route.get(
 route.get(
   "/chat",
   passportCall("current"),
-  authorization("user"),
+  authorization(["user"]),
   viewsController.chat.bind(viewsController)
 );
 
@@ -31,15 +31,16 @@ route.get(
   viewsController.productDetail.bind(viewsController)
 );
 
-route.get("/carts/:cId", viewsController.carts.bind(viewsController));
+route.get(
+  "/carts/:cId",
+  passportCall("current"),
+  authorization(["user", "premium"]),
+  viewsController.carts.bind(viewsController)
+);
 
 route.get("/register", viewsController.register.bind(viewsController));
 
-route.get(
-  "/login",
-  passportCall("current"),
-  viewsController.login.bind(viewsController)
-);
+route.get("/login", viewsController.login.bind(viewsController));
 
 route.get(
   "/perfil",
@@ -54,5 +55,16 @@ route.get(
 );
 
 route.get("/failureLogin", viewsController.failureLogin.bind(viewsController));
+
+route.get(
+  "/editUsers",
+  passportCall("current"),
+  authorization(["admin"]),
+  viewsController.editUsers.bind(viewsController)
+);
+
+route.get("/ticket/:idT", viewsController.ticket.bind(viewsController));
+
+route.get("/notFound", viewsController.notFound.bind(viewsController));
 
 export default route;

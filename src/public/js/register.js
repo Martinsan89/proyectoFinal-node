@@ -1,3 +1,5 @@
+const mensaje = document.querySelector("#confirmMsj");
+
 async function send(event) {
   event.preventDefault();
   const first_name = document.getElementById("form-name").value;
@@ -25,5 +27,12 @@ async function send(event) {
   });
   response
     .json()
-    .then((d) => window.location.replace("http://localhost:8080/login"));
+    .then((d) => {
+      if (d.error) {
+        d.error?.message?.map((e) => (mensaje.innerHTML = `<p>${e.issue}</p>`));
+        return;
+      }
+      window.location.replace("http://localhost:8080/login");
+    })
+    .catch((err) => (mensaje.innerHTML = `<p>Error ${err}</p>`));
 }

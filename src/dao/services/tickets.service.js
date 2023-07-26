@@ -11,7 +11,7 @@ class TicketsService {
   }
 
   async find(myAggregate, options) {
-    return this.#model.aggregatePaginate(myAggregate, options);
+    return this.#model.find();
   }
 
   async aggregate(aggregateSearch) {

@@ -1,5 +1,4 @@
 import DaoFactory from "../dao/persistenceFactory.js";
-// import CustomError from "../errors/custom.errors.js";
 import ErrorEnum from "../errors/errors.enum.js";
 
 class PremiumController {
@@ -15,7 +14,6 @@ class PremiumController {
     try {
       const usuario = await this.#usersService.findById(userId);
       if (!userRole) {
-        // res.send({ error: "Usuario no logueado" });
         res.userErrorResponse(
           "Documents not complete",
           ErrorEnum.INVALID_PRODUCT_ERROR
@@ -40,8 +38,7 @@ class PremiumController {
         );
       }
     } catch (error) {
-      console.log(error);
-      // next(error);
+      next(error);
     }
   }
 }

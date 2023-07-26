@@ -1,3 +1,6 @@
+const mensaje = document.querySelector("#confirmRestorePassword");
+const mensajeLogin = document.querySelector("#confirmLogin");
+
 async function login(event) {
   event.preventDefault();
   const email = document.getElementById("form-email").value;
@@ -6,6 +9,9 @@ async function login(event) {
     email,
     password,
   };
+  if (body.email === "" || body.password === "") {
+    return (mensajeLogin.innerHTML = `<p>INGRESE SUS DATOS</p>`);
+  }
   const response = await fetch("http://localhost:8080/api/auth/login", {
     method: "POST",
     body: JSON.stringify(body),
@@ -15,15 +21,20 @@ async function login(event) {
   });
   response
     .json()
-    .then((d) => window.location.replace("http://localhost:8080/"));
+    .then((d) => {
+      if (d.error) {
+        return (mensajeLogin.innerHTML = `<p>USUARIO NO REGISTRADO</p>`);
+      }
+      window.location.replace("http://localhost:8080/");
+    })
+    .catch((err) => (mensaje.innerHTML = `<p>Error ${err}</p>`));
 }
 
 async function recoverPass(event) {
   event.preventDefault();
-  const mensaje = document.querySelector("#confirmRestorePassword");
   const email = document.getElementById("form-email").value;
   if (!email) {
-    mensaje.innerHTML = "<p>Introduzca su email</p>";
+    mensaje.innerHTML = "<p>INTRODUZCA SU EMAIL</p>";
     return;
   }
   const body = {
@@ -46,5 +57,5 @@ async function recoverPass(event) {
   response
     .json()
     .then((d) => (mensaje.innerHTML = "<p>Email enviado</p>"))
-    .catch((err) => console.log("err login.js", err));
+    .catch((err) => (mensaje.innerHTML = "<p>Error</p>"));
 }
