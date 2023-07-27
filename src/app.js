@@ -80,7 +80,7 @@ app.use("/api", routes);
 
 app.use(errorMiddleware);
 
-const port = PORT;
+const port = PORT || 8080;
 const httpServer = app.listen(port, () =>
   logger.info(`servidor conectado desde el port numero ${port}`)
 );

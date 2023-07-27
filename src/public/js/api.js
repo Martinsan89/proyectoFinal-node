@@ -8,7 +8,7 @@ const api = {
       },
     });
     return response.json();
-    // .then((d) => window.location.replace("http://localhost:8080/login"));
+    // .then((d) => window.location.replace("http://proyectofinal-node-production.up.railway.app/login"));
   },
   get: async (url) => {
     const response = await fetch(url, {

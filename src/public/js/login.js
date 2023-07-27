@@ -12,20 +12,25 @@ async function login(event) {
   if (body.email === "" || body.password === "") {
     return (mensajeLogin.innerHTML = `<p>INGRESE SUS DATOS</p>`);
   }
-  const response = await fetch("http://localhost:8080/api/auth/login", {
-    method: "POST",
-    body: JSON.stringify(body),
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+  const response = await fetch(
+    "http://proyectofinal-node-production.up.railway.app/api/auth/login",
+    {
+      method: "POST",
+      body: JSON.stringify(body),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
   response
     .json()
     .then((d) => {
       if (d.error) {
         return (mensajeLogin.innerHTML = `<p>USUARIO NO REGISTRADO</p>`);
       }
-      window.location.replace("http://localhost:8080/");
+      window.location.replace(
+        "http://proyectofinal-node-production.up.railway.app/"
+      );
     })
     .catch((err) => (mensaje.innerHTML = `<p>Error ${err}</p>`));
 }
@@ -41,7 +46,7 @@ async function recoverPass(event) {
     email,
   };
   const response = await fetch(
-    "http://localhost:8080/api/auth/restorePassword",
+    "http://proyectofinal-node-production.up.railway.app/api/auth/restorePassword",
     {
       method: "POST",
       body: JSON.stringify(body),

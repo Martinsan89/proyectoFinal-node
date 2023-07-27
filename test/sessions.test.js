@@ -2,7 +2,9 @@ import supertest from "supertest";
 import { expect } from "chai";
 
 describe("test de sesiones", () => {
-  const requester = supertest("http://localhost:8080");
+  const requester = supertest(
+    "http://proyectofinal-node-production.up.railway.app"
+  );
 
   let cookie;
 

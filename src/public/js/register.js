@@ -18,13 +18,16 @@ async function send(event) {
     password,
   };
 
-  const response = await fetch("http://localhost:8080/api/auth/register", {
-    method: "POST",
-    body: JSON.stringify(body),
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+  const response = await fetch(
+    "http://proyectofinal-node-production.up.railway.app/api/auth/register",
+    {
+      method: "POST",
+      body: JSON.stringify(body),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
   response
     .json()
     .then((d) => {
@@ -32,7 +35,9 @@ async function send(event) {
         d.error?.message?.map((e) => (mensaje.innerHTML = `<p>${e.issue}</p>`));
         return;
       }
-      window.location.replace("http://localhost:8080/login");
+      window.location.replace(
+        "http://proyectofinal-node-production.up.railway.app/login"
+      );
     })
     .catch((err) => (mensaje.innerHTML = `<p>Error ${err}</p>`));
 }
