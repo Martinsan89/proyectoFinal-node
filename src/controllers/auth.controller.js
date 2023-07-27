@@ -92,7 +92,7 @@ class AuthController {
         to: email,
         subject: "Welcome to Shoes-Ecommerce",
         html: `<h1>Reestablezca la contraseña</h1>
-          <button> <a href="http://proyectofinal-node-production.up.railway.app/forgotPassword">Click para reestablecer la contrasena</a></button>`,
+          <button> <a href="https://proyectofinal-node-production.up.railway.app/forgotPassword">Click para reestablecer la contrasena</a></button>`,
       });
       const token = generateToken({
         id: user._id,

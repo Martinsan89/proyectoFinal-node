@@ -72,17 +72,17 @@ class ViewsController {
             hasPrevPage: products.hasPrevPage,
             hasNextPage: products.hasNextPage,
             prevLink: query.sort
-              ? `http://proyectofinal-node-production.up.railway.app/?page=${
+              ? `https://proyectofinal-node-production.up.railway.app/?page=${
                   products.prevPage
                 }&sort=${query.sort}&status=${query.status ?? "true"}`
-              : `http://proyectofinal-node-production.up.railway.app/?page=${
+              : `https://proyectofinal-node-production.up.railway.app/?page=${
                   products.prevPage
                 }&limit=${query.limit ?? "10"}`,
             nextLink: query.sort
-              ? `http://proyectofinal-node-production.up.railway.app/?page=${
+              ? `https://proyectofinal-node-production.up.railway.app/?page=${
                   products.nextPage
                 }&sort=${query.sort}&status=${query.status ?? "true"}`
-              : `http://proyectofinal-node-production.up.railway.app/?page=${
+              : `https://proyectofinal-node-production.up.railway.app/?page=${
                   products.nextPage
                 }&limit=${query.limit ?? "10"}`,
           });

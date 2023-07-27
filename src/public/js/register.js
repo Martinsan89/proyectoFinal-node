@@ -19,7 +19,7 @@ async function send(event) {
   };
 
   const response = await fetch(
-    "http://proyectofinal-node-production.up.railway.app/api/auth/register",
+    "https://proyectofinal-node-production.up.railway.app/api/auth/register",
     {
       method: "POST",
       body: JSON.stringify(body),
@@ -36,7 +36,7 @@ async function send(event) {
         return;
       }
       window.location.replace(
-        "http://proyectofinal-node-production.up.railway.app/login"
+        "https://proyectofinal-node-production.up.railway.app/login"
       );
     })
     .catch((err) => (mensaje.innerHTML = `<p>Error ${err}</p>`));

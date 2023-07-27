@@ -48,7 +48,7 @@
             return
         }
 
-        const response = await fetch(`http://proyectofinal-node-production.up.railway.app/api/carts/${cartId}`, {
+        const response = await fetch(`https://proyectofinal-node-production.up.railway.app/api/carts/${cartId}`, {
         method: 'PUT',
         headers: {
             "Content-Type": "application/json",
@@ -57,7 +57,7 @@
         })
 
         if(response.status !== 400){
-            window.location.href = `http://proyectofinal-node-production.up.railway.app/carts/${cartId}`
+            window.location.href = `https://proyectofinal-node-production.up.railway.app/carts/${cartId}`
         }else {
             mensaje.innerHTML = '<p>ERROR AL AGREGAR EL PRODUCTO</p>'
         }

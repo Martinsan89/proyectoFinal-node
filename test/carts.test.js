@@ -3,7 +3,7 @@ import { expect } from "chai";
 
 describe("Carts tests", () => {
   const requester = supertest(
-    "http://proyectofinal-node-production.up.railway.app"
+    "https://proyectofinal-node-production.up.railway.app"
   );
 
   describe("Crear y actualizar un carrito", () => {

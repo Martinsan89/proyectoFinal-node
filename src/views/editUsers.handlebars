@@ -46,7 +46,7 @@
             role: newRole
         }
 
-        const response = await fetch(`http://proyectofinal-node-production.up.railway.app/api/users/${id}`, {
+        const response = await fetch(`https://proyectofinal-node-production.up.railway.app/api/users/${id}`, {
             method: "PUT",
             body: JSON.stringify(body),
             headers: {
@@ -55,17 +55,17 @@
         });
         response
         .json()
-         .then((d) => window.location.href = 'http://proyectofinal-node-production.up.railway.app/editUsers')
+         .then((d) => window.location.href = 'https://proyectofinal-node-production.up.railway.app/editUsers')
         .catch((err) => mensaje.innerHTML = `<p>${err}</p>`)
     }
 
     async function deleteUser(id) {
-        const response = await fetch(`http://proyectofinal-node-production.up.railway.app/api/users/${id}`, {
+        const response = await fetch(`https://proyectofinal-node-production.up.railway.app/api/users/${id}`, {
             method: "delete",
         });
         response
         .json()
-         .then((d) => window.location.href = 'http://proyectofinal-node-production.up.railway.app/editUsers')
+         .then((d) => window.location.href = 'https://proyectofinal-node-production.up.railway.app/editUsers')
         .catch((err) => mensajeDelete.innerHTML = `<p>${err}</p>`)
     }
 
