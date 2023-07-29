@@ -99,6 +99,8 @@
     }
 
     async function updateProd(idProd) {
+        const cartId = document.querySelector(".deleteProd").getAttribute('data-cart');
+
         const body = {
             quantity: newQuantity
         }
