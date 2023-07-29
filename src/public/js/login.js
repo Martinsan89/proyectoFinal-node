@@ -27,7 +27,7 @@ async function login(event) {
       }
       window.location.replace(`${fetchUrl}/home`);
     })
-    .catch((err) => (mensaje.innerHTML = `<p>Error ${err}</p>`));
+    .catch((err) => (mensajeLogin.innerHTML = `<p>Error ${err}</p>`));
 }
 
 async function recoverPass(event) {

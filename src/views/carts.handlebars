@@ -32,27 +32,50 @@
         </div>
     </div>
     <div>
-        <button class="btn" value={{cId}} onclick="purchase(value)">FINALIZAR COMPRA</button>
+        <form>
+            <input
+                id='form-user-name'
+                type='text'
+                name='form-user-name'
+                placeholder='NOMBRE'
+            />
+            <input
+                id='form-card'
+                type='number'
+                name='form-card'
+                placeholder='TARJETA'
+            />
+            <button class="btn" value={{cId}} onclick="purchase(value)">FINALIZAR COMPRA</button>
+        </form>
+        <div id="confirmMsj"></div>
     </div>
 </div>
 
 <script>
     const fetchUrl = "https://proyectofinal-node-production.up.railway.app";
+    const user-name = document.getElementById("form-user-name").value;
+    const card = document.getElementById("form-card").value;
+    const mensaje = document.querySelector("#confirmMsj");
 
 
     const mensaje = document.querySelector("#confirmMsg");
 
     async function purchase(value){
-        const response = await fetch(`${fetchUrl}/api/carts/${value}/purchase`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-    response
-        .json()
-        .then((d) => window.location.href = `${fetchUrl}/ticket/${d._id}`)    
-        .catch((err) => mensaje.innerHTML = `<p>${err}</p>`)
+        if(user-name && card ){
+            const response = await fetch(`${fetchUrl}/api/carts/${value}/purchase`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        })
+            response
+                .json()
+                .then((d) => window.location.href = `${fetchUrl}/ticket/${d._id}`)    
+                .catch((err) => mensaje.innerHTML = `<p>${err}</p>`)
+            return
+        }
+        return mensaje.innerHTML = '<p>INGRESE SUS DATOS PARA FINALIZAR LA COMPRA</p>'
+
     }
     
     const cartId = document.querySelector(".deleteProd").getAttribute('data-cart');

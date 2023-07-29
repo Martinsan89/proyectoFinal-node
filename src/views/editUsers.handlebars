@@ -1,4 +1,7 @@
 <div>
+    <div>
+        <a href="/home">HOME</a>
+    </div>
     <h1>Editar usuarios</h1>
     <div>
         <h5>test</h5>
@@ -31,7 +34,7 @@
 </div>
 
 <script>
-    const fetchUrl = "https://proyectofinal-node-production.up.railway.app";
+    const fetchUrlPath = "https://proyectofinal-node-production.up.railway.app";
 
     const mensaje = document.querySelector("#confirmMsg");
     const mensajeDelete = document.querySelector("#confirmDelete");
@@ -48,7 +51,7 @@
             role: newRole
         }
 
-        const response = await fetch(`${fetchUrl}/api/users/${id}`, {
+        const response = await fetch(`${fetchUrlPath}/api/users/${id}`, {
             method: "PUT",
             body: JSON.stringify(body),
             headers: {
@@ -57,17 +60,17 @@
         });
         response
         .json()
-         .then((d) => window.location.href = `${fetchUrl}/editUsers`)
+         .then((d) => window.location.href = `${fetchUrlPath}/editUsers`)
         .catch((err) => mensaje.innerHTML = `<p>${err}</p>`)
     }
 
     async function deleteUser(id) {
-        const response = await fetch(`${fetchUrl}/api/users/${id}`, {
+        const response = await fetch(`${fetchUrlPath}/api/users/${id}`, {
             method: "delete",
         });
         response
         .json()
-         .then((d) => window.location.href = `${fetchUrl}/editUsers`)
+         .then((d) => window.location.href = `${fetchUrlPath}/editUsers`)
         .catch((err) => mensajeDelete.innerHTML = `<p>${err}</p>`)
     }
 
