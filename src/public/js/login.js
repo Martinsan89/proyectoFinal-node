@@ -12,25 +12,20 @@ async function login(event) {
   if (body.email === "" || body.password === "") {
     return (mensajeLogin.innerHTML = `<p>INGRESE SUS DATOS</p>`);
   }
-  const response = await fetch(
-    "https://proyectofinal-node-production.up.railway.app/api/auth/login",
-    {
-      method: "POST",
-      body: JSON.stringify(body),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }
-  );
+  const response = await fetch(`${fetchUrl}api/auth/login`, {
+    method: "POST",
+    body: JSON.stringify(body),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
   response
     .json()
     .then((d) => {
       if (d.error) {
         return (mensajeLogin.innerHTML = `<p>USUARIO NO REGISTRADO</p>`);
       }
-      window.location.replace(
-        "https://proyectofinal-node-production.up.railway.app/"
-      );
+      window.location.replace(`${fetchUrl}home`);
     })
     .catch((err) => (mensaje.innerHTML = `<p>Error ${err}</p>`));
 }
@@ -45,16 +40,13 @@ async function recoverPass(event) {
   const body = {
     email,
   };
-  const response = await fetch(
-    "https://proyectofinal-node-production.up.railway.app/api/auth/restorePassword",
-    {
-      method: "POST",
-      body: JSON.stringify(body),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }
-  );
+  const response = await fetch(`${fetchUrl}api/auth/restorePassword`, {
+    method: "POST",
+    body: JSON.stringify(body),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
   if (response.status === 404) {
     return (mensaje.innerHTML = "<p>Usuario no registrado</p>");
   }

@@ -2,7 +2,7 @@ import DaoFactory from "../dao/persistenceFactory.js";
 import config from "../../config.js";
 import TicketsService from "../dao/services/tickets.service.js";
 
-const { PERSISTENCE } = config;
+const { PERSISTENCE, FETCH_URL } = config;
 
 class ViewsController {
   #userService;
@@ -72,19 +72,19 @@ class ViewsController {
             hasPrevPage: products.hasPrevPage,
             hasNextPage: products.hasNextPage,
             prevLink: query.sort
-              ? `https://proyectofinal-node-production.up.railway.app/?page=${
-                  products.prevPage
-                }&sort=${query.sort}&status=${query.status ?? "true"}`
-              : `https://proyectofinal-node-production.up.railway.app/?page=${
-                  products.prevPage
-                }&limit=${query.limit ?? "10"}`,
+              ? `${FETCH_URL}?page=${products.prevPage}&sort=${
+                  query.sort
+                }&status=${query.status ?? "true"}`
+              : `${FETCH_URL}?page=${products.prevPage}&limit=${
+                  query.limit ?? "10"
+                }`,
             nextLink: query.sort
-              ? `https://proyectofinal-node-production.up.railway.app/?page=${
-                  products.nextPage
-                }&sort=${query.sort}&status=${query.status ?? "true"}`
-              : `https://proyectofinal-node-production.up.railway.app/?page=${
-                  products.nextPage
-                }&limit=${query.limit ?? "10"}`,
+              ? `${FETCH_URL}?page=${products.nextPage}&sort=${
+                  query.sort
+                }&status=${query.status ?? "true"}`
+              : `${FETCH_URL}?page=${products.nextPage}&limit=${
+                  query.limit ?? "10"
+                }`,
           });
         }
       })
@@ -96,9 +96,12 @@ class ViewsController {
   async home(req, res) {
     const query = req.query;
     const id = req.user?.user?.id;
+    if (!id) {
+      return res.redirect(`${FETCH_URL}login`);
+    }
     const user = await this.#userService.findById(id);
     const redirection = "home";
-    await this.getProducts(query, redirection, res, user);
+    await this.getProducts(query, redirection, res, user, FETCH_URL);
   }
 
   async realtimeProducts(req, res) {
@@ -115,7 +118,7 @@ class ViewsController {
     const user = req.user;
     const redirection = "products";
 
-    await getProducts(query, redirection, res, user);
+    await this.getProducts(query, redirection, res, user);
   }
 
   async productDetail(req, res) {
@@ -181,11 +184,6 @@ class ViewsController {
   }
 
   async login(req, res) {
-    const user = req.user;
-    if (user) {
-      res.redirect("home");
-    }
-
     res.render("login");
   }
 

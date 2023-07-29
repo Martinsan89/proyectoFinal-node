@@ -15,6 +15,7 @@ const env = process.env;
 
 export default {
   NODE_ENV: env.NODE_ENV,
+  FETCH_URL: env.FETCH_URL,
   PERSISTENCE: env.PERSISTENCE,
   PORT: env.PORT,
   mongo_url: env.MONGO_URL,

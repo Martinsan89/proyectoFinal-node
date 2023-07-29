@@ -1,4 +1,5 @@
 NODE_ENV=production
+FETCH_URL=https://proyectofinal-node-production.up.railway.app/
 PERSISTENCE=FS
 PORT=8080
 COOKIE_SECRET= 123456
@@ -13,4 +14,4 @@ MAIL_HOST=smtp.ethereal.email
 MAIL_PORT=587
 MAIL_USER=vaughn.purdy@ethereal.email
 MAIL_PASS=7s6KRP2VgdZthF6ym3
-DEPRECATED_USERS = 1.728e+8
+DEPRECATED_USERS = 172800000

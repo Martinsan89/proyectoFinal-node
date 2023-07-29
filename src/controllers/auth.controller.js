@@ -6,6 +6,7 @@ import logger from "../logger/winstom-custom-logger.js";
 import { emailService } from "../external-services/email.service.js";
 
 const SECRET = config.jwt_token;
+const fetchUrl = config.FETCH_URL;
 
 function generateToken(user) {
   const token = jwt.sign({ user }, SECRET, { expiresIn: "24h" });
@@ -92,7 +93,7 @@ class AuthController {
         to: email,
         subject: "Welcome to Shoes-Ecommerce",
         html: `<h1>Reestablezca la contraseña</h1>
-          <button> <a href="https://proyectofinal-node-production.up.railway.app/forgotPassword">Click para reestablecer la contrasena</a></button>`,
+          <button> <a href=${fetchUrl}forgotPassword">Click para reestablecer la contrasena</a></button>`,
       });
       const token = generateToken({
         id: user._id,

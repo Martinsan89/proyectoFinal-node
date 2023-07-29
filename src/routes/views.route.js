@@ -4,8 +4,10 @@ import { passportCall, authorization } from "../utils/middlewares/auth.js";
 
 const route = Router();
 
+route.get("/", viewsController.login.bind(viewsController));
+
 route.get(
-  "/",
+  "/home",
   passportCall("current"),
   viewsController.home.bind(viewsController)
 );
@@ -39,8 +41,6 @@ route.get(
 );
 
 route.get("/register", viewsController.register.bind(viewsController));
-
-route.get("/login", viewsController.login.bind(viewsController));
 
 route.get(
   "/perfil",

@@ -37,11 +37,13 @@
 </div>
 
 <script>
+    const fetchUrl = "https://proyectofinal-node-production.up.railway.app/";
+
 
     const mensaje = document.querySelector("#confirmMsg");
 
     async function purchase(value){
-        const response = await fetch(`https://proyectofinal-node-production.up.railway.app/api/carts/${value}/purchase`, {
+        const response = await fetch(`${fetchUrl}api/carts/${value}/purchase`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -49,14 +51,14 @@
     })
     response
         .json()
-        .then((d) => window.location.href = `https://proyectofinal-node-production.up.railway.app/ticket/${d._id}`)    
+        .then((d) => window.location.href = `${fetchUrl}ticket/${d._id}`)    
         .catch((err) => mensaje.innerHTML = `<p>${err}</p>`)
     }
     
     const cartId = document.querySelector(".deleteProd").getAttribute('data-cart');
 
     async function deleteProd(idProd) {
-        const response = await fetch(`https://proyectofinal-node-production.up.railway.app/api/carts/${cartId}/product/${idProd}`, {
+        const response = await fetch(`${fetchUrl}api/carts/${cartId}/product/${idProd}`, {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json",
@@ -64,7 +66,7 @@
         })
         response
         .json()
-        .then((d) => window.location.href = `https://proyectofinal-node-production.up.railway.app/carts/${cartId}`)
+        .then((d) => window.location.href = `${fetchUrl}carts/${cartId}`)
         .catch((err) => mensaje.innerHTML = `<p>${err}</p>`)
     }
 
@@ -80,7 +82,7 @@
             quantity: newQuantity
         }
 
-        const response = await fetch(`https://proyectofinal-node-production.up.railway.app/api/carts/${cartId}/product/${idProd}`, {
+        const response = await fetch(`${fetchUrl}api/carts/${cartId}/product/${idProd}`, {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
@@ -89,7 +91,7 @@
         })
         response
         .json()
-        .then((d) => window.location.href = `https://proyectofinal-node-production.up.railway.app/carts/${cartId}`)
+        .then((d) => window.location.href = `${fetchUrl}carts/${cartId}`)
         .catch((err) => mensaje.innerHTML = `<p>${err}</p>`)
     }
 

@@ -52,7 +52,7 @@ class UsersController {
         })
       );
       // Filter users by last_connection / get deprecated_users
-      const { DEPRECATED_USERS } = config;
+      const { DEPRECATED_USERS, FETCH_URL } = config;
 
       const userToDelete = usersLastConnection[0].filter(
         (e) => +e.last_connection > +DEPRECATED_USERS
@@ -68,7 +68,7 @@ class UsersController {
             to: e.email,
             subject: "Your account has beend deleted",
             html: `<h1>Su cuenta ha sido borrada</h1>
-            <button> <a href="https://proyectofinal-node-production.up.railway.app/register">Click para reestablecer la contrasena</a></button>`,
+            <button> <a href="${FETCH_URL}register">Click para reestablecer la contrasena</a></button>`,
           })
       );
 
