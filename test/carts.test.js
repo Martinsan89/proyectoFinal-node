@@ -2,7 +2,9 @@ import supertest from "supertest";
 import { expect } from "chai";
 
 describe("Carts tests", () => {
-  const requester = supertest("proyecto-final-node-iota.vercel.app");
+  const requester = supertest(
+    "https://proyectofinal-node-production.up.railway.app"
+  );
 
   describe("Crear y actualizar un carrito", () => {
     let cartID;

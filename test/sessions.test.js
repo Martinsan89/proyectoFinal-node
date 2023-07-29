@@ -2,7 +2,9 @@ import supertest from "supertest";
 import { expect } from "chai";
 
 describe("test de sesiones", () => {
-  const requester = supertest("proyecto-final-node-iota.vercel.app");
+  const requester = supertest(
+    "https://proyectofinal-node-production.up.railway.app/"
+  );
 
   let cookie;
 

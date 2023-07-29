@@ -32,7 +32,7 @@ async function send(event) {
         d.error?.message?.map((e) => (mensaje.innerHTML = `<p>${e.issue}</p>`));
         return;
       }
-      window.location.replace(`${fetchUrl}/home`);
+      window.location.replace(`${fetchUrl}/`);
     })
     .catch((err) => (mensaje.innerHTML = `<p>Error ${err}</p>`));
 }

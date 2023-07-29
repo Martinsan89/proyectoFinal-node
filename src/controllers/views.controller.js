@@ -72,17 +72,17 @@ class ViewsController {
             hasPrevPage: products.hasPrevPage,
             hasNextPage: products.hasNextPage,
             prevLink: query.sort
-              ? `${FETCH_URL}?page=${products.prevPage}&sort=${
+              ? `${FETCH_URL}/home?page=${products.prevPage}&sort=${
                   query.sort
                 }&status=${query.status ?? "true"}`
-              : `${FETCH_URL}?page=${products.prevPage}&limit=${
+              : `${FETCH_URL}/home?page=${products.prevPage}&limit=${
                   query.limit ?? "10"
                 }`,
             nextLink: query.sort
-              ? `${FETCH_URL}?page=${products.nextPage}&sort=${
+              ? `${FETCH_URL}/home?page=${products.nextPage}&sort=${
                   query.sort
                 }&status=${query.status ?? "true"}`
-              : `${FETCH_URL}?page=${products.nextPage}&limit=${
+              : `${FETCH_URL}/home?page=${products.nextPage}&limit=${
                   query.limit ?? "10"
                 }`,
           });
@@ -95,6 +95,7 @@ class ViewsController {
 
   async home(req, res) {
     const query = req.query;
+    const id = req.user.user.id;
     const user = await this.#userService.findById(id);
     const redirection = "home";
     await this.getProducts(query, redirection, res, user, FETCH_URL);
