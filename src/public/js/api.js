@@ -1,1 +1,1 @@
-const fetchUrl = "https://proyectofinal-node-production.up.railway.app";
+const fetchUrl = "proyecto-final-node-iota.vercel.app";
