@@ -61,7 +61,6 @@
         const card = document.getElementById("card").value;
 
         if(userName && card ){
-            console.log(userName, card)
             const response = await fetch(`${fetchUrl}/api/carts/${value}/purchase`, {
         method: "POST",
         headers: {
