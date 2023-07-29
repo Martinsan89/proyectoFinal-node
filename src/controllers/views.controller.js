@@ -95,10 +95,6 @@ class ViewsController {
 
   async home(req, res) {
     const query = req.query;
-    const id = req.user?.user?.id;
-    if (!id) {
-      return res.redirect(`${FETCH_URL}login`);
-    }
     const user = await this.#userService.findById(id);
     const redirection = "home";
     await this.getProducts(query, redirection, res, user, FETCH_URL);

@@ -1,6 +1,6 @@
 <div class="container">
      <div>
-        <a class="btn" href="/">HOME</a>
+        <a class="btn" href="/home">HOME</a>
     </div>
     <div class="header">
         <h1>CARRITO</h1>
@@ -37,13 +37,13 @@
 </div>
 
 <script>
-    const fetchUrl = "https://proyectofinal-node-production.up.railway.app/";
+    const fetchUrl = "https://proyectofinal-node-production.up.railway.app";
 
 
     const mensaje = document.querySelector("#confirmMsg");
 
     async function purchase(value){
-        const response = await fetch(`${fetchUrl}api/carts/${value}/purchase`, {
+        const response = await fetch(`${fetchUrl}/api/carts/${value}/purchase`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -51,14 +51,14 @@
     })
     response
         .json()
-        .then((d) => window.location.href = `${fetchUrl}ticket/${d._id}`)    
+        .then((d) => window.location.href = `${fetchUrl}/ticket/${d._id}`)    
         .catch((err) => mensaje.innerHTML = `<p>${err}</p>`)
     }
     
     const cartId = document.querySelector(".deleteProd").getAttribute('data-cart');
 
     async function deleteProd(idProd) {
-        const response = await fetch(`${fetchUrl}api/carts/${cartId}/product/${idProd}`, {
+        const response = await fetch(`${fetchUrl}/api/carts/${cartId}/product/${idProd}`, {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json",
@@ -66,7 +66,7 @@
         })
         response
         .json()
-        .then((d) => window.location.href = `${fetchUrl}carts/${cartId}`)
+        .then((d) => window.location.href = `${fetchUrl}/carts/${cartId}`)
         .catch((err) => mensaje.innerHTML = `<p>${err}</p>`)
     }
 
@@ -82,7 +82,7 @@
             quantity: newQuantity
         }
 
-        const response = await fetch(`${fetchUrl}api/carts/${cartId}/product/${idProd}`, {
+        const response = await fetch(`${fetchUrl}/api/carts/${cartId}/product/${idProd}`, {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
@@ -91,7 +91,7 @@
         })
         response
         .json()
-        .then((d) => window.location.href = `${fetchUrl}carts/${cartId}`)
+        .then((d) => window.location.href = `${fetchUrl}/carts/${cartId}`)
         .catch((err) => mensaje.innerHTML = `<p>${err}</p>`)
     }
 

@@ -1,5 +1,5 @@
 NODE_ENV=production
-FETCH_URL=https://proyectofinal-node-production.up.railway.app/
+FETCH_URL=https://proyectofinal-node-production.up.railway.app
 PERSISTENCE=FS
 PORT=8080
 COOKIE_SECRET= 123456

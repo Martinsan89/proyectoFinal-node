@@ -13,3 +13,8 @@ src/sms.js
 src/logger/winston-logger.js
 src/classes/server
 mock.js
+src/views/failureLogin.handlebars
+src/views/forgotPassword.handlebars
+src/views/perfil.handlebars
+src/views/realTimeProducts.handlebars
+src/public/js/products.js

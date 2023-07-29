@@ -29,7 +29,7 @@
 
 
 <script>
-    const fetchUrl = "https://proyectofinal-node-production.up.railway.app/";
+    const fetchUrl = "https://proyectofinal-node-production.up.railway.app";
 
     const input = document.querySelector("#quantity");
     const mensaje = document.querySelector("#confirmMsg");
@@ -50,7 +50,7 @@
             return
         }
 
-        const response = await fetch(`${fetchUrl}api/carts/${cartId}`, {
+        const response = await fetch(`${fetchUrl}/api/carts/${cartId}`, {
         method: 'PUT',
         headers: {
             "Content-Type": "application/json",
@@ -59,7 +59,7 @@
         })
 
         if(response.status !== 400){
-            window.location.href = `${fetchUrl}carts/${cartId}`
+            window.location.href = `${fetchUrl}/carts/${cartId}`
         }else {
             mensaje.innerHTML = '<p>ERROR AL AGREGAR EL PRODUCTO</p>'
         }

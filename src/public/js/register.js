@@ -18,7 +18,7 @@ async function send(event) {
     password,
   };
 
-  const response = await fetch(`${fetchUrl}api/auth/register`, {
+  const response = await fetch(`${fetchUrl}/api/auth/register`, {
     method: "POST",
     body: JSON.stringify(body),
     headers: {
@@ -32,7 +32,7 @@ async function send(event) {
         d.error?.message?.map((e) => (mensaje.innerHTML = `<p>${e.issue}</p>`));
         return;
       }
-      window.location.replace(`${fetchUrl}login`);
+      window.location.replace(`${fetchUrl}/home`);
     })
     .catch((err) => (mensaje.innerHTML = `<p>Error ${err}</p>`));
 }

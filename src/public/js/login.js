@@ -12,7 +12,7 @@ async function login(event) {
   if (body.email === "" || body.password === "") {
     return (mensajeLogin.innerHTML = `<p>INGRESE SUS DATOS</p>`);
   }
-  const response = await fetch(`${fetchUrl}api/auth/login`, {
+  const response = await fetch(`${fetchUrl}/api/auth/login`, {
     method: "POST",
     body: JSON.stringify(body),
     headers: {
@@ -25,7 +25,7 @@ async function login(event) {
       if (d.error) {
         return (mensajeLogin.innerHTML = `<p>USUARIO NO REGISTRADO</p>`);
       }
-      window.location.replace(`${fetchUrl}home`);
+      window.location.replace(`${fetchUrl}/home`);
     })
     .catch((err) => (mensaje.innerHTML = `<p>Error ${err}</p>`));
 }
@@ -40,7 +40,7 @@ async function recoverPass(event) {
   const body = {
     email,
   };
-  const response = await fetch(`${fetchUrl}api/auth/restorePassword`, {
+  const response = await fetch(`${fetchUrl}/api/auth/restorePassword`, {
     method: "POST",
     body: JSON.stringify(body),
     headers: {
