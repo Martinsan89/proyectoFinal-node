@@ -18,3 +18,4 @@ src/views/forgotPassword.handlebars
 src/views/perfil.handlebars
 src/views/realTimeProducts.handlebars
 src/public/js/products.js
+.vercel
